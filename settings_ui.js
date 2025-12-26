@@ -1,0 +1,375 @@
+// Manages the UI aspects of the settings panel, including visibility and populating selectors.
+
+function toggleSettings() {
+  // Assumes settingsPanel is accessible
+  const willShow = !settingsPanel.classList.contains("visible");
+  setSettingsPanelVisible(willShow);
+}
+
+function setSettingsPanelVisible(visible) {
+  settingsPanel.classList.toggle("visible", visible);
+  try {
+    localStorage.setItem('settingsPanelLastOpen', visible.toString());
+  } catch (e) {
+    debugLog(`Could not persist settingsPanelLastOpen: ${e}`, 'warn');
+  }
+}
+
+function populateModelSelector() {
+  // Use the container inside the settings panel instead of the separate one
+  const container = document.getElementById('modelSelectorContainer');
+
+  if (!container || !availableModels) {
+    console.error("Model selector container or available models list not found.");
+    return;
+  }
+
+  // Clear previous content
+  container.innerHTML = '';
+
+  // Create the display area for the selected model
+  const selectedDisplay = document.createElement('div');
+  selectedDisplay.className = 'model-selector-selected';
+  selectedDisplay.innerHTML = `
+    <img src="" alt="Selected model" class="model-selector-selected-img">
+    <span class="model-selector-selected-name">Select Model</span>
+    <span class="model-selector-arrow">▼</span>
+  `;
+  container.appendChild(selectedDisplay);
+
+  // Create the dropdown list
+  const dropdownList = document.createElement('ul');
+  dropdownList.className = 'model-selector-dropdown';
+  container.appendChild(dropdownList);
+
+  // Make container position relative for absolute positioning of dropdown
+  container.style.position = 'relative';
+
+  // Populate the dropdown list
+  availableModels.forEach(model => {
+    const listItem = document.createElement('li');
+    listItem.dataset.value = model.url; // Store URL in data attribute
+    listItem.dataset.image = model.image; // Store image path
+    listItem.dataset.name = model.name; // Store name
+    listItem.innerHTML = `
+      <img src="${model.image}" alt="${model.name}" class="model-selector-option-img">
+      <span>${model.name}</span>
+    `;
+    dropdownList.appendChild(listItem);
+
+    // Add click listener to each item
+    listItem.addEventListener('click', (e) => {
+      const selectedUrl = e.currentTarget.dataset.value;
+      const selectedImage = e.currentTarget.dataset.image;
+      const selectedName = e.currentTarget.dataset.name;
+
+      // Update the display
+      selectedDisplay.querySelector('.model-selector-selected-img').src = selectedImage;
+      selectedDisplay.querySelector('.model-selector-selected-name').textContent = selectedName;
+
+      // Trigger the model load (similar to the original change event)
+      // We'll need to ensure the loadModel function is accessible or trigger an event
+      if (loadModel) {
+        debugLog(`Model selection changed to: ${selectedUrl}`, 'info');
+        loadModel(selectedUrl)
+          .then(() => localStorage.setItem('selectedModelUrl', selectedUrl))
+          .catch(error => {
+            console.error("Failed to load selected Live2D model:", error);
+            debugLog(`ERROR: Failed to load selected Live2D model: ${error}`, 'error');
+            addMessage(`Sorry, I couldn't load that model (${error.message}).`, false);
+            // Optionally revert display?
+          });
+      } else {
+        console.error("loadModel function not found.");
+      }
+
+      // Close the dropdown
+      dropdownList.style.display = 'none';
+      selectedDisplay.classList.remove('open');
+    });
+  });
+
+  // Add click listener to the display area to toggle the dropdown
+  selectedDisplay.addEventListener('click', () => {
+    const isOpen = dropdownList.style.display === 'block';
+    dropdownList.style.display = isOpen ? 'none' : 'block';
+    selectedDisplay.classList.toggle('open', !isOpen);
+  });
+
+  // Close dropdown if clicking outside - update selector for settings panel context
+  document.addEventListener('click', (event) => {
+    if (!container.contains(event.target)) {
+      dropdownList.style.display = 'none';
+      selectedDisplay.classList.remove('open');
+    }
+  });
+
+  // Set initial selected display (using saved or default)
+  const initialModelUrl = localStorage.getItem('selectedModelUrl') || defaultModelUrl;
+  const initialModel = availableModels.find(m => m.url === initialModelUrl) || availableModels[0];
+  if (initialModel) {
+    selectedDisplay.querySelector('.model-selector-selected-img').src = initialModel.image;
+    selectedDisplay.querySelector('.model-selector-selected-name').textContent = initialModel.name;
+  }
+  // Render the custom models list after selector is ready
+  if (typeof renderCustomModelsList === 'function') renderCustomModelsList();
+}
+
+// Populate Custom Models dropdown and bind change to load selected model
+function renderCustomModelsList() {
+  const dropdown = document.getElementById('customModelsDropdown');
+  if (!dropdown) return;
+  let userModels = [];
+  try { userModels = JSON.parse(localStorage.getItem('userModels') || '[]'); } catch (e) { userModels = []; }
+  dropdown.innerHTML = '';
+  if (!Array.isArray(userModels) || userModels.length === 0) {
+    const opt = document.createElement('option');
+    opt.textContent = 'No custom models added';
+    opt.disabled = true; opt.selected = true; opt.value = '';
+    dropdown.appendChild(opt);
+    return;
+  }
+  const placeholder = document.createElement('option');
+  placeholder.textContent = 'Select a custom model';
+  placeholder.disabled = true; placeholder.selected = true; placeholder.value = '';
+  dropdown.appendChild(placeholder);
+  userModels.forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m.url; opt.textContent = m.name || m.url;
+    dropdown.appendChild(opt);
+  });
+  dropdown.onchange = (e) => {
+    const url = e.target.value;
+    const model = (window.availableModels || []).find(m => m.url === url);
+    if (!url || !model) {
+      updateCustomModelInfo('');
+      return;
+    }
+    const selector = document.getElementById('modelSelectorContainer');
+    const imgEl = selector?.querySelector('.model-selector-selected-img');
+    const nameEl = selector?.querySelector('.model-selector-selected-name');
+    if (imgEl) imgEl.src = model.image || 'https://via.placeholder.com/64?text=L2D';
+    if (nameEl) nameEl.textContent = model.name || 'Custom Model';
+    if (typeof loadModel === 'function') {
+      loadModel(url)
+        .then(() => { try { localStorage.setItem('selectedModelUrl', url); } catch (_) { } })
+        .catch(err => debugLog('Failed to load custom model from dropdown: ' + err, 'error'));
+    }
+    updateCustomModelInfo(url);
+  };
+  updateCustomModelInfo('');
+}
+
+function updateCustomModelInfo(url) {
+  const wrap = document.getElementById('customModelInfo'); if (!wrap) return;
+  if (!url) { wrap.innerHTML = ''; return; }
+  let userModels = []; try { userModels = JSON.parse(localStorage.getItem('userModels') || '[]'); } catch (_) { }
+  const m = userModels.find(x => x.url === url); if (!m) { wrap.innerHTML = ''; return; }
+  const img = m.image || 'https://via.placeholder.com/64?text=L2D';
+  wrap.innerHTML = `<div class="custom-model-info"><img src="${img}" alt="${m.name || 'Custom Model'}"><div class="meta"><div class="name">${m.name || 'Custom Model'}</div><a class="url" href="${m.url}" target="_blank" rel="noopener">${m.url}</a></div><button class="remove-btn" data-url="${m.url}">Remove</button></div>`;
+  wrap.querySelector('.remove-btn')?.addEventListener('click', () => {
+    const u = m.url; if (typeof handleRemoveCustomModel === 'function') handleRemoveCustomModel(u);
+    renderCustomModelsList(); updateCustomModelInfo('');
+    const dd = document.getElementById('customModelsDropdown'); if (dd) dd.value = '';
+  });
+}
+window.updateCustomModelInfo = updateCustomModelInfo;
+
+function populateLanguageSelector() {
+  // Assumes languageSelector (dropdown element) and languages (config array) are accessible
+  // Also assumes selectedLanguageCode (global) has been initialized from localStorage or default
+  if (!languageSelector || !languages) {
+    debugLog('populateLanguageSelector: languageSelector or languages array not found. Cannot populate.', 'error');
+    return;
+  }
+  languageSelector.innerHTML = ''; // Clear existing options
+
+  if (languages.length === 0) {
+    debugLog('populateLanguageSelector: languages array is empty. Dropdown will be empty.', 'warn');
+    return; // No languages to add
+  }
+
+  // Show all languages now - AI will translate any language
+  languages.forEach(lang => {
+    const option = document.createElement('option');
+    option.value = lang.code;
+    option.textContent = `${lang.englishName} (${lang.nativeName})`;
+    languageSelector.appendChild(option);
+  });
+
+  // Set current selection based on the global selectedLanguageCode
+  languageSelector.value = selectedLanguageCode;
+
+  // Fallback if the selectedLanguageCode from localStorage isn't a valid option anymore
+  if (languageSelector.selectedIndex === -1 && languages.length > 0) {
+    debugLog(`Warning: selectedLanguageCode '${selectedLanguageCode}' not found in dropdown. Defaulting to first option: '${languages[0].code}'.`, 'warn');
+    languageSelector.value = languages[0].code;
+    selectedLanguageCode = languages[0].code; // Update global state
+    localStorage.setItem('selectedLanguageCode', selectedLanguageCode); // Persist fallback
+  }
+  debugLog(`Language selector populated with all ${languages.length} languages. Current selected: ${selectedLanguageCode}. Dropdown actual value: ${languageSelector.value}`, 'info');
+
+  // Update voice selector when language selector is populated
+  populateVoiceSelector();
+}
+
+function populateVoiceSelector() {
+  if (!voiceSelector || !voices) {
+    debugLog('populateVoiceSelector: voiceSelector or voices array not found. Cannot populate.', 'error');
+    return;
+  }
+
+  voiceSelector.innerHTML = ''; // Clear existing options
+
+  // Add "None" option first
+  const noneOption = document.createElement('option');
+  noneOption.value = 'none';
+  noneOption.textContent = 'None';
+  voiceSelector.appendChild(noneOption);
+
+  // Requirement: Display ALL WebSim TTS voices regardless of language selection.
+  const uniqueVoices = new Map();
+  voices.forEach(voice => {
+    if (!uniqueVoices.has(voice.id)) {
+      uniqueVoices.set(voice.id, voice);
+    }
+  });
+
+  const availableVoices = Array.from(uniqueVoices.values());
+
+  availableVoices.forEach(voice => {
+    const option = document.createElement('option');
+    option.value = voice.id;
+    const providerLabel = voice.provider === 'tiktok' ? 'TikTok' : voice.provider === 'streamelements' ? 'StreamElements' : 'WebSim';
+    // Only show provider suffix if it's not the default WebSim provider
+    option.textContent = voice.provider === 'websim' ? voice.name : `${voice.name} (${providerLabel})`;
+    voiceSelector.appendChild(option);
+  });
+
+  // Determine the best voice for the current language
+  // Uses voiceLanguageOverrides to find a fallback voice for languages without native TTS
+  function getDefaultVoiceForLanguage(langCode) {
+    const baseLangCode = langCode.split('-')[0];
+
+    // Check if this language has an override mapping
+    const overrides = window.voiceLanguageOverrides || {};
+    const overrideLang = overrides[langCode] || overrides[baseLangCode];
+
+    // Determine which base language to look for
+    const targetBaseLang = overrideLang || baseLangCode;
+
+    // Find female voice for the target language
+    const femaleVoice = availableVoices.find(v =>
+      v.language.split('-')[0] === targetBaseLang &&
+      v.gender === 'female' &&
+      v.provider === 'websim'
+    );
+
+    if (femaleVoice) {
+      return femaleVoice.id;
+    }
+
+    // Fallback: check langConfig's defaultVoiceId
+    const langConfig = languages.find(l => l.code === langCode);
+    if (langConfig && langConfig.defaultVoiceId) {
+      // Check if that defaultVoiceId is a valid voice
+      if (availableVoices.some(v => v.id === langConfig.defaultVoiceId)) {
+        return langConfig.defaultVoiceId;
+      }
+    }
+
+    // Final fallback: English female or first available
+    const enFemale = availableVoices.find(v => v.id === 'en-female');
+    return enFemale ? 'en-female' : (availableVoices[0]?.id || 'none');
+  }
+
+  // Get the default voice for current language
+  const defaultVoiceForLang = getDefaultVoiceForLanguage(selectedLanguageCode);
+
+  // Check if user explicitly set to 'none'
+  const savedVoiceId = localStorage.getItem('selectedVoiceId');
+  if (savedVoiceId === 'none') {
+    selectedVoiceId = 'none';
+  } else {
+    // Always use the appropriate default voice for the current language
+    // This ensures voice switches when language changes
+    selectedVoiceId = defaultVoiceForLang;
+    localStorage.setItem('selectedVoiceId', selectedVoiceId);
+  }
+
+  voiceSelector.value = selectedVoiceId;
+  debugLog(`Voice selector populated. Language: ${selectedLanguageCode}, Selected voice: ${selectedVoiceId}`, 'info');
+}
+
+
+
+function applyBackgroundFit(mode) {
+  const m = String(mode || '').toLowerCase();
+  const bgLayer = document.getElementById('bgLayer');
+  if (!bgLayer) return;
+
+  // defaults
+  bgLayer.style.backgroundRepeat = 'no-repeat';
+  switch (m) {
+    case 'contain':
+    case 'contain-center':
+      bgLayer.style.backgroundSize = 'contain';
+      bgLayer.style.backgroundPosition = 'center center';
+      break;
+    case 'contain-top':
+      bgLayer.style.backgroundSize = 'contain';
+      bgLayer.style.backgroundPosition = 'center top';
+      break;
+    case 'contain-bottom':
+      bgLayer.style.backgroundSize = 'contain';
+      bgLayer.style.backgroundPosition = 'center bottom';
+      break;
+    case 'cover':
+    case 'cover-center':
+      bgLayer.style.backgroundSize = 'cover';
+      bgLayer.style.backgroundPosition = 'center center';
+      break;
+    case 'cover-top':
+      bgLayer.style.backgroundSize = 'cover';
+      bgLayer.style.backgroundPosition = 'center top';
+      break;
+    case 'cover-bottom':
+      bgLayer.style.backgroundSize = 'cover';
+      bgLayer.style.backgroundPosition = 'center bottom';
+      break;
+    case 'fit-width':
+      bgLayer.style.backgroundSize = '100% auto';
+      bgLayer.style.backgroundPosition = 'center center';
+      break;
+    case 'fit-height':
+      bgLayer.style.backgroundSize = 'auto 100%';
+      bgLayer.style.backgroundPosition = 'center center';
+      break;
+    case 'stretch':
+      bgLayer.style.backgroundSize = '100% 100%';
+      bgLayer.style.backgroundPosition = 'center center';
+      break;
+    default:
+      bgLayer.style.backgroundSize = 'cover';
+      bgLayer.style.backgroundPosition = 'center center';
+  }
+  try { localStorage.setItem('bgFitMode', m || 'cover'); } catch (_) { }
+  setActiveBgFitButton(m || 'cover');
+}
+
+function setActiveBgFitButton(mode) {
+  const ids = [
+    'bgFitContainBtn', 'bgFitCoverBtn', 'bgFitStretchBtn',
+    'bgFitCoverTopBtn', 'bgFitCoverCenterBtn', 'bgFitCoverBottomBtn',
+    'bgFitContainTopBtn', 'bgFitContainCenterBtn', 'bgFitContainBottomBtn',
+    'bgFitFitWidthBtn', 'bgFitFitHeightBtn'
+  ];
+  ids.forEach(id => document.getElementById(id)?.classList.remove('active'));
+  const map = {
+    'contain': 'bgFitContainBtn', 'contain-center': 'bgFitContainCenterBtn', 'contain-top': 'bgFitContainTopBtn', 'contain-bottom': 'bgFitContainBottomBtn',
+    'cover': 'bgFitCoverBtn', 'cover-center': 'bgFitCoverCenterBtn', 'cover-top': 'bgFitCoverTopBtn', 'cover-bottom': 'bgFitCoverBottomBtn',
+    'fit-width': 'bgFitFitWidthBtn', 'fit-height': 'bgFitFitHeightBtn', 'stretch': 'bgFitStretchBtn'
+  };
+  const targetId = map[mode] || map['cover'];
+  document.getElementById(targetId)?.classList.add('active');
+}
