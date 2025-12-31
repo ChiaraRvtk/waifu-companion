@@ -2,6 +2,8 @@
 
 ![License: MIT-0](https://img.shields.io/badge/License-MIT--0-purple.svg)
 
+[![Waifu AI Live Demo](https://raw.githubusercontent.com/waifuai/projects-assets/main/assets/demo-portrait.webp)](https://waifuai.com)
+
 **Waifu Companion** is a fully customizable, browser-based intelligent assistant that brings your favorite characters to life using Live2D technology. It combines interactive visuals with advanced AI capabilities to create a personalized desktop companion experience.
 
 ## ✨ Key Features
