@@ -1,423 +1,452 @@
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.3/dist/pixi.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.6/dayjs.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <button class="settings-button">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0-1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-      </svg>
-    </button>
 
-    <div class="settings-panel" id="settingsPanel">
-      <div class="settings-group">
-        <h3 data-ui-key="personaSettingsTitle">🧠 Persona System Prompt</h3>
-        <div class="settings-item">
-          <label for="corePersonaPrompt" data-ui-key="corePersonaLabel">🆔 Core Identity</label>
-          <textarea id="corePersonaPrompt" class="settings-textarea" placeholder="Describe who you are fundamentally..."></textarea>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@5.3.3/dist/pixi.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/index.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.10.6/dayjs.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <button class="settings-button">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="3"></circle>
+      <path
+        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0-1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+      </path>
+    </svg>
+  </button>
+
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-group">
+      <h3 data-ui-key="personaSettingsTitle">🧠 Persona System Prompt</h3>
+      <div class="settings-item">
+        <label for="corePersonaPrompt" data-ui-key="corePersonaLabel">🆔 Core Identity</label>
+        <textarea id="corePersonaPrompt" class="settings-textarea"
+          placeholder="Describe who you are fundamentally..."></textarea>
+      </div>
+      <div class="settings-item">
+        <label for="personaPrompt" data-ui-key="personaSystemPromptLabel">🎭 Custom Personality / Roleplay</label>
+        <textarea id="personaPrompt" class="settings-textarea"
+          placeholder="e.g., You are a tsundere childhood friend who secretly has a crush on the user..."></textarea>
+        <div class="button-row">
+          <button id="savePersonaBtn" data-ui-key="savePersonaBtn">Save Persona Settings</button>
+          <button id="resetPersonaBtn" class="reset-button" data-ui-key="resetPersonaBtn">Reset Persona</button>
         </div>
-        <div class="settings-item">
-          <label for="personaPrompt" data-ui-key="personaSystemPromptLabel">🎭 Custom Personality / Roleplay</label>
-          <textarea id="personaPrompt" class="settings-textarea" placeholder="e.g., You are a tsundere childhood friend who secretly has a crush on the user..."></textarea>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3 data-ui-key="memorySettingsTitle">🧠 Memory Settings</h3>
+      <div class="settings-item">
+        <label for="memorySize" data-ui-key="conversationMemoryLabel">🧵 Conversation Memory Size</label>
+        <input type="range" id="memorySize" min="5" max="50" value="10" />
+        <div class="value-display" data-ui-desc="memorySize">
+          Current: <span id="memorySizeValue">10</span> messages
+        </div>
+      </div>
+
+    </div>
+
+    <div class="settings-group">
+      <h3 data-ui-key="modelSettingsTitle">🧩 Model Settings</h3>
+      <div class="settings-item">
+        <label for="modelSelectorContainer" data-ui-key="selectModelLabel">🎭 Select Model</label>
+        <div id="modelSelectorContainer">
+          <!-- Custom dropdown will be populated here by ui_manager.js -->
+        </div>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="addCustomModelLabel">➕ Add Custom Model</label>
+        <input id="customModelName" class="settings-select" placeholder="Model name (optional)">
+        <input id="customModelUrl" class="settings-select" placeholder="Model .model3.json URL">
+        <input id="customModelImage" class="settings-select" placeholder="Thumbnail image URL (optional)">
+        <button id="addCustomModelBtn" data-ui-key="addModelBtn">Add Model</button>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="customModelsLabel">📂 Custom Models</label>
+        <select id="customModelsDropdown" class="settings-select"></select>
+      </div>
+      <div class="settings-item" id="customModelInfo"></div>
+      <div class="settings-item">
+        <button id="resetModelPositionBtn" data-ui-key="resetModelPositionBtn">♻️ Reset Model Position & Zoom</button>
+      </div>
+      <div class="settings-item">
+        <button id="clearAllModelsBtn" data-ui-key="clearAllModelsBtn">🗑️ Clear All Models</button>
+      </div>
+      <div class="settings-item">
+        <button id="openModelGalleryBtn" data-ui-key="openModelGalleryBtn">Open Model Gallery</button>
+      </div>
+      <div class="settings-item">
+        <button id="clearCustomModelsBtn" data-ui-key="clearCustomModelsBtn">🗑️ Clear Custom Models</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3 data-ui-key="languageSettingsTitle">🌐 Language Settings</h3>
+      <div class="settings-item">
+        <label for="languageSelector" data-ui-key="responseLanguageLabel">🌍 Language</label>
+        <select id="languageSelector" class="settings-select"></select>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="showTransliterationLabel">
+          <input type="checkbox" id="showTransliteration" /> 🔤 Show Transliteration (for JA, KO)
+        </label>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="translateUILabel">
+          <input type="checkbox" id="translateUICheckbox" /> 🈯 Translate User Interface (AI)
+        </label>
+      </div>
+      <div class="settings-item">
+        <button id="resetLanguagesBtn" data-ui-key="resetLanguagesBtn">Reset Languages</button>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3 data-ui-key="voiceSettingsTitle">🔊 Voice Settings (Pollinations TTS)</h3>
+      <div class="settings-item">
+        <label data-ui-key="enableVoiceLabel">
+          <input type="checkbox" id="enableVoiceCheckbox" /> 🔈 Enable Voice (TTS)
+        </label>
+      </div>
+      <div class="settings-item" id="voiceControls">
+        <label for="voiceSelector" data-ui-key="voiceLabel">🎙️ Select Voice</label>
+        <select id="voiceSelector" class="settings-select"></select>
+        <div class="value-display" id="voiceDescription">Select a voice to see its description</div>
+
+        <div style="margin-top: 15px;">
+          <label data-ui-key="testVoiceLabel">🔊 Test Voice</label>
           <div class="button-row">
-            <button id="savePersonaBtn" data-ui-key="savePersonaBtn">Save Persona Settings</button>
-            <button id="resetPersonaBtn" class="reset-button" data-ui-key="resetPersonaBtn">Reset Persona</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="memorySettingsTitle">🧠 Memory Settings</h3>
-        <div class="settings-item">
-          <label for="memorySize" data-ui-key="conversationMemoryLabel">🧵 Conversation Memory Size</label>
-          <input type="range" id="memorySize" min="5" max="50" value="10" />
-          <div class="value-display" data-ui-desc="memorySize">
-            Current: <span id="memorySizeValue">10</span> messages
-          </div>
-        </div>
-        
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="modelSettingsTitle">🧩 Model Settings</h3>
-        <div class="settings-item">
-          <label for="modelSelectorContainer" data-ui-key="selectModelLabel">🎭 Select Model</label>
-          <div id="modelSelectorContainer">
-            <!-- Custom dropdown will be populated here by ui_manager.js -->
-          </div>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="addCustomModelLabel">➕ Add Custom Model</label>
-          <input id="customModelName" class="settings-select" placeholder="Model name (optional)">
-          <input id="customModelUrl" class="settings-select" placeholder="Model .model3.json URL">
-          <input id="customModelImage" class="settings-select" placeholder="Thumbnail image URL (optional)">
-          <button id="addCustomModelBtn" data-ui-key="addModelBtn">Add Model</button>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="customModelsLabel">📂 Custom Models</label>
-          <select id="customModelsDropdown" class="settings-select"></select>
-        </div>
-        <div class="settings-item" id="customModelInfo"></div>
-        <div class="settings-item">
-          <button id="resetModelPositionBtn" data-ui-key="resetModelPositionBtn">♻️ Reset Model Position & Zoom</button>
-        </div>
-        <div class="settings-item">
-          <button id="clearAllModelsBtn" data-ui-key="clearAllModelsBtn">🗑️ Clear All Models</button>
-        </div>
-        <div class="settings-item">
-          <button id="openModelGalleryBtn" data-ui-key="openModelGalleryBtn">Open Model Gallery</button>
-        </div>
-        <div class="settings-item">
-          <button id="clearCustomModelsBtn" data-ui-key="clearCustomModelsBtn">🗑️ Clear Custom Models</button>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="languageSettingsTitle">🌐 Language Settings</h3>
-        <div class="settings-item">
-          <label for="languageSelector" data-ui-key="responseLanguageLabel">🌍 Language</label>
-          <select id="languageSelector" class="settings-select"></select>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="showTransliterationLabel">
-            <input type="checkbox" id="showTransliteration" /> 🔤 Show Transliteration (for JA, KO)
-          </label>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="translateUILabel">
-            <input type="checkbox" id="translateUICheckbox" /> 🈯 Translate User Interface (AI)
-          </label>
-        </div>
-        <div class="settings-item">
-          <button id="resetLanguagesBtn" data-ui-key="resetLanguagesBtn">Reset Languages</button>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="voiceSettingsTitle">🔊 Voice Settings</h3>
-        <div class="settings-item">
-          <label data-ui-key="enableVoiceLabel">
-            <input type="checkbox" id="enableVoiceCheckbox" /> 🔈 Enable Voice (TTS)
-          </label>
-        </div>
-        <div class="settings-item" id="voiceControls">
-          <label for="voiceSelector" data-ui-key="voiceLabel">🎙️ Voice</label>
-          <select id="voiceSelector" class="settings-select"></select>
-          
-          <div style="margin-top: 15px;">
-            <label for="ttsChunkLimit" data-ui-key="ttsChunkLimitLabel">📏 TTS Chunk Character Limit</label>
-            <input type="range" id="ttsChunkLimit" min="50" max="1000" step="50" value="300" />
-            <div class="value-display" data-ui-desc="ttsChunkLimit">
-              Max Characters: <span id="ttsChunkLimitValue">300</span>
-            </div>
-          </div>
-          <div class="button-row" style="margin-top: 15px;">
-            <button id="globalPlayTTSBtn" data-ui-key="playTTSBtn">Play</button>
-            <button id="globalPauseTTSBtn" data-ui-key="pauseTTSBtn">Pause</button>
-            <button id="globalStopTTSBtn" data-ui-key="stopTTSBtn">Stop</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="audioSettingsTitle">🎧 Audio Settings</h3>
-        <div class="settings-item">
-          <label data-ui-key="radioStreamLabel">📻 Radio Stream</label>
-          <div class="radio-controls-inline">
-            <button id="radioToggleBtn" class="radio-toggle-button">
-              <svg id="radioPlayIcon" class="radio-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M8 5v14l11-7z"/>
-              </svg>
-              <svg id="radioPauseIcon" class="radio-icon hidden" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
-              </svg>
-            </button>
-            <div class="volume-control-inline">
-              <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.5 12C18.5 14.21 17.53 16.21 16 17.44V6.56C17.53 7.79 18.5 9.79 18.5 12M5 11V13H8L12 17V7L8 11H5Z" />
-              </svg>
-              <input type="range" id="radioVolumeSlider" min="0" max="1" step="0.01" value="0.25" aria-label="Radio volume">
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="displaySettingsTitle">🖥️ Display Settings</h3>
-        <div class="settings-item">
-          <label data-ui-key="showClockLabel">
-            <input type="checkbox" id="showClockCheckbox" /> ⏰ Show Clock
-          </label>
-        </div>
-        <div class="settings-item">
-          <label for="chatboxOpacity" data-ui-key="chatboxOpacityLabel">🪟 Chatbox Opacity</label>
-          <input type="range" id="chatboxOpacity" min="0.1" max="1" step="0.05" value="0.9" />
-          <div class="value-display" data-ui-desc="chatboxOpacity">
-            Current: <span id="chatboxOpacityValue">0.9</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <label for="messageOpacity" data-ui-key="messageOpacityLabel">💬 Message Bubble Opacity</label>
-          <input type="range" id="messageOpacity" min="0.1" max="1" step="0.05" value="0.3" />
-          <div class="value-display" data-ui-desc="messageOpacity">
-            Current: <span id="messageOpacityValue">0.3</span>
-          </div>
-        </div>
-        <div class="settings-item">
-          <label for="bgOpacity" data-ui-key="bgOpacityLabel">🖼️ Background Image Opacity</label>
-          <input type="range" id="bgOpacity" min="0" max="1" step="0.05" value="1.0" />
-          <div class="value-display" data-ui-desc="bgOpacity">
-            Current: <span id="bgOpacityValue">1.0</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="backgroundSettingsTitle">🖼️ Background Image</h3>
-        <div class="settings-item">
-          <label for="bgPromptInput" data-ui-key="bgPromptLabel">✨ AI Background Prompt</label>
-          <input id="bgPromptInput" class="settings-select" placeholder="e.g., tranquil starry night sky, minimal, soft light">
-          <button id="generateBgBtn" data-ui-key="generateBgBtn">Generate Background</button>
-          <button id="generateBgFromContextBtn" data-ui-key="generateBgFromContextBtn">Generate from Conversation</button>
-        </div>
-        <div class="settings-item">
-          <label for="bgUrlInput" data-ui-key="bgUrlLabel">🌐 Custom Background URL</label>
-          <input id="bgUrlInput" class="settings-select" placeholder="https://example.com/image.jpg">
-          <button id="applyBgUrlBtn" data-ui-key="applyBgUrlBtn">Set Background</button>
-        </div>
-        <div class="settings-item">
-          <button id="clearBgBtn" data-ui-key="clearBgBtn">🧹 Clear Background</button>
-        </div>
-
-        <div class="settings-item">
-          <label data-ui-key="bgLibraryLabel">📚 Background Library</label>
-          <div id="bgLibrary"></div>
-          <div class="bg-lib-actions">
-            <button id="openBgViewerBtn" data-ui-key="openBgViewerBtn">Open Fullscreen Viewer</button>
-            <button id="toggleBgSelectBtn" data-ui-key="toggleBgSelectBtn">Select</button>
-            <button id="deleteBgSelectedBtn" disabled data-ui-key="deleteBgSelectedBtn">Delete Selected</button>
-            <button id="clearBgLibraryBtn" data-ui-key="clearBgLibraryBtn">Clear Library</button>
+            <input type="text" id="testVoiceText" class="settings-select" placeholder="Type text to test voice..."
+              value="Oie, testando a sua voz rs." style="flex: 1;">
+            <button id="testVoiceBtn" style="min-width: 80px;">▶️ Test</button>
           </div>
         </div>
 
-        <div class="settings-item">
-          <label data-ui-key="bgFitLabel">📐 Background Fit</label>
-          <div class="bg-fit-group">
-            <button id="bgFitContainBtn" data-ui-key="bgFitContain">Contain</button>
-            <button id="bgFitCoverBtn" data-ui-key="bgFitCover">Cover</button>
-            <button id="bgFitStretchBtn" data-ui-key="bgFitStretch">Stretch</button>
-            <button id="bgFitCoverTopBtn" data-ui-key="bgFitCoverTop">Cover • Top</button>
-            <button id="bgFitCoverCenterBtn" data-ui-key="bgFitCoverCenter">Cover • Center</button>
-            <button id="bgFitCoverBottomBtn" data-ui-key="bgFitCoverBottom">Cover • Bottom</button>
-            <button id="bgFitContainTopBtn" data-ui-key="bgFitContainTop">Contain • Top</button>
-            <button id="bgFitContainCenterBtn" data-ui-key="bgFitContainCenter">Contain • Center</button>
-            <button id="bgFitContainBottomBtn" data-ui-key="bgFitContainBottom">Contain • Bottom</button>
-            <button id="bgFitFitWidthBtn" data-ui-key="bgFitFitWidth">Fit Width</button>
-            <button id="bgFitFitHeightBtn" data-ui-key="bgFitFitHeight">Fit Height</button>
+        <div style="margin-top: 15px;">
+          <label for="ttsChunkLimit" data-ui-key="ttsChunkLimitLabel">📏 TTS Chunk Character Limit</label>
+          <input type="range" id="ttsChunkLimit" min="50" max="1000" step="50" value="300" />
+          <div class="value-display" data-ui-desc="ttsChunkLimit">
+            Max Characters: <span id="ttsChunkLimitValue">300</span>
           </div>
         </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="preferencesTitle">⚙️ Preferences</h3>
-        <div class="settings-item">
-          <label data-ui-key="alwaysShowSettingsLabel">
-            <input type="checkbox" id="alwaysShowSettingsCheckbox" />
-            🪄 Always show Settings on page load
-          </label>
-          <div class="value-display" data-ui-desc="alwaysShowSettingsDesc">
-            If enabled, the settings panel opens on every load. Otherwise, it remembers your last open/closed state.
-          </div>
-        </div>
-        <div class="settings-item">
-            <label data-ui-key="includeTimeLabel">
-                <input type="checkbox" id="includeTimeCheckbox" checked />
-                ⏱️ Include current time in context
-            </label>
-            <div class="value-display" data-ui-desc="includeTimeDesc">
-                Provides the AI with the current date and time for context-aware responses.
-            </div>
-        </div>
-        <div class="settings-item">
-            <label data-ui-key="includeBatteryLabel">
-                <input type="checkbox" id="includeBatteryCheckbox" checked />
-                🔋 Include battery status in context
-            </label>
-            <div class="value-display" data-ui-desc="includeBatteryDesc">
-                Allows the AI to know your device's battery level and charging state.
-            </div>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="multipleModelsLabel">
-            <input type="checkbox" id="multipleModelsCheckbox" />
-            🧬 Load multiple models at once
-          </label>
-          <div class="value-display" data-ui-desc="multipleModelsDesc">When enabled, selecting a model adds it without removing existing ones.</div>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="debugSettingsTitle">🐞 Debug Settings</h3>
-        <div class="settings-item">
-          <label data-ui-key="enableDebuggerLabel">
-            <input type="checkbox" id="enableDebugger" /> 🧰 Enable Debug Panel
-          </label>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="autoScrollLabel">
-            <input type="checkbox" id="autoScroll" checked /> 📜 Auto-scroll Log
-          </label>
-        </div>
-        <div class="settings-item">
-          <button onclick="clearDebugLog()" data-ui-key="clearDebugLogBtn">🧹 Clear Debug Log</button>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="showVerboseLogsLabel">
-            <input type="checkbox" id="showVerboseLogsCheckbox" checked /> 💬 Show Live2d Debug Logs
-          </label>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="showAIDebugLogsLabel">
-            <input type="checkbox" id="showAIDebugLogsCheckbox" checked /> 🧠 Show AI Debug Logs
-          </label>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="showTTSDebugLogsLabel">
-            <input type="checkbox" id="showTTSDebugLogsCheckbox" checked /> 🔊 Show TTS Debug Logs
-          </label>
-        </div>
-        <div class="settings-item">
-          <label data-ui-key="forceOfflineLabel">
-            <input type="checkbox" id="forceOfflineCheckbox" /> 🔌 Test Fallback AI
-          </label>
-        </div>
-      </div>
-
-      <div class="settings-group">
-        <h3 data-ui-key="helpTutorialTitle">❓ Help & Tutorial</h3>
-        <div class="settings-item">
-          <button id="launchTutorialBtn" data-ui-key="launchTutorialBtn">📘 Launch Tutorial</button>
+        <div class="button-row" style="margin-top: 15px;">
+          <button id="globalPlayTTSBtn" data-ui-key="playTTSBtn">▶️ Play</button>
+          <button id="globalPauseTTSBtn" data-ui-key="pauseTTSBtn">⏸️ Pause</button>
+          <button id="globalStopTTSBtn" data-ui-key="stopTTSBtn">⏹️ Stop</button>
         </div>
       </div>
     </div>
 
-    <div class="nowtime">
-      <p id="time"></p>
-    </div>
-
-    <!-- Radio Stream Player -->
-    <div class="radio-container" style="display: none;">
-      <audio id="radioPlayer" src="https://listen.moe/stream" aria-label="Anime radio stream player" onerror="handleAudioError(this)">
-        Your browser does not support the audio element or the stream format.
-      </audio>
-    </div>
-
-    <!-- Model Selector -->
-    <div id="modelSelectorContainer_old" class="model-selector-container" style="display: none;">
-      <!-- Moved to settings panel -->
-    </div>
-
-    <!-- Language & Display Settings Container -->
-    <div id="languageDisplaySettingsContainer" class="language-display-settings-container" style="display: none;">
-      <!-- Moved to settings panel -->
-    </div>
-
-    <div class="chat-container">
-      <div class="chat-header">
-        <span>💬 Chat</span>
-        <span id="chat-status-indicator">OFFLINE</span>
-      </div>
-      <div class="chat-content">
-        <div class="chat-history" id="chatHistory"></div>
-        <div class="typing-indicator" id="typingIndicator"></div>
-        <div class="chat-input">
-          <input type="text" id="messageInput" placeholder="Type your message..."/>
-          <button id="micBtn" class="mic-button" aria-label="Start voice input" title="Voice input">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-              <path d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19h2v3h-2z"/>
+    <div class="settings-group">
+      <h3 data-ui-key="audioSettingsTitle">🎧 Audio Settings</h3>
+      <div class="settings-item">
+        <label data-ui-key="radioStreamLabel">📻 Radio Stream</label>
+        <div class="radio-controls-inline">
+          <button id="radioToggleBtn" class="radio-toggle-button">
+            <svg id="radioPlayIcon" class="radio-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+            <svg id="radioPauseIcon" class="radio-icon hidden" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
             </svg>
           </button>
-          <button onclick="sendMessage()">Send</button>
-          <button id="resetChatBtn" onclick="clearChatHistory()">Reset Chat</button>
+          <div class="volume-control-inline">
+            <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M18.5 12C18.5 14.21 17.53 16.21 16 17.44V6.56C17.53 7.79 18.5 9.79 18.5 12M5 11V13H8L12 17V7L8 11H5Z" />
+            </svg>
+            <input type="range" id="radioVolumeSlider" min="0" max="1" step="0.01" value="0.25"
+              aria-label="Radio volume">
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="debug-panel" id="debugPanel">
-      <div class="debug-header" id="debugHeader">🧰 Debug Panel</div>
-      <div class="debug-content">
-        <div id="debugLog"></div>
+    <div class="settings-group">
+      <h3 data-ui-key="displaySettingsTitle">🖥️ Display Settings</h3>
+      <div class="settings-item">
+        <label data-ui-key="showClockLabel">
+          <input type="checkbox" id="showClockCheckbox" /> ⏰ Show Clock
+        </label>
       </div>
-    </div>
-
-    <div class="tutorial-overlay" id="tutorialOverlay" aria-hidden="true">
-      <div class="tutorial-modal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
-        <h3 id="tutorialTitle">Welcome to the App</h3>
-        <div id="tutorialBody"></div>
-        <div class="tutorial-controls">
-          <button id="tutorialPrevBtn">Back</button>
-          <button id="tutorialNextBtn">Next</button>
-          <button id="tutorialCloseBtn">Close</button>
+      <div class="settings-item">
+        <label for="chatboxOpacity" data-ui-key="chatboxOpacityLabel">🪟 Chatbox Opacity</label>
+        <input type="range" id="chatboxOpacity" min="0.1" max="1" step="0.05" value="0.9" />
+        <div class="value-display" data-ui-desc="chatboxOpacity">
+          Current: <span id="chatboxOpacityValue">0.9</span>
+        </div>
+      </div>
+      <div class="settings-item">
+        <label for="messageOpacity" data-ui-key="messageOpacityLabel">💬 Message Bubble Opacity</label>
+        <input type="range" id="messageOpacity" min="0.1" max="1" step="0.05" value="0.3" />
+        <div class="value-display" data-ui-desc="messageOpacity">
+          Current: <span id="messageOpacityValue">0.3</span>
+        </div>
+      </div>
+      <div class="settings-item">
+        <label for="bgOpacity" data-ui-key="bgOpacityLabel">🖼️ Background Image Opacity</label>
+        <input type="range" id="bgOpacity" min="0" max="1" step="0.05" value="1.0" />
+        <div class="value-display" data-ui-desc="bgOpacity">
+          Current: <span id="bgOpacityValue">1.0</span>
         </div>
       </div>
     </div>
 
-    <div id="bgViewerOverlay" class="bg-viewer-overlay" aria-hidden="true">
-      <button class="bg-viewer-close" id="bgViewerCloseBtn" aria-label="Close">×</button>
-      <button class="bg-viewer-nav prev" id="bgViewerPrevBtn" aria-label="Previous">‹</button>
-      <img id="bgViewerImage" alt="Background preview">
-      <button class="bg-viewer-nav next" id="bgViewerNextBtn" aria-label="Next">›</button>
-      <div id="bgViewerCounter" class="bg-viewer-counter"></div>
+    <div class="settings-group">
+      <h3 data-ui-key="backgroundSettingsTitle">🖼️ Background Image</h3>
+      <div class="settings-item">
+        <label for="bgPromptInput" data-ui-key="bgPromptLabel">✨ AI Background Prompt</label>
+        <input id="bgPromptInput" class="settings-select"
+          placeholder="e.g., tranquil starry night sky, minimal, soft light">
+        <button id="generateBgBtn" data-ui-key="generateBgBtn">Generate Background</button>
+        <button id="generateBgFromContextBtn" data-ui-key="generateBgFromContextBtn">Generate from Conversation</button>
+      </div>
+      <div class="settings-item">
+        <label for="bgUrlInput" data-ui-key="bgUrlLabel">🌐 Custom Background URL</label>
+        <input id="bgUrlInput" class="settings-select" placeholder="https://example.com/image.jpg">
+        <button id="applyBgUrlBtn" data-ui-key="applyBgUrlBtn">Set Background</button>
+      </div>
+      <div class="settings-item">
+        <button id="clearBgBtn" data-ui-key="clearBgBtn">🧹 Clear Background</button>
+      </div>
+
+      <div class="settings-item">
+        <label data-ui-key="bgLibraryLabel">📚 Background Library</label>
+        <div id="bgLibrary"></div>
+        <div class="bg-lib-actions">
+          <button id="openBgViewerBtn" data-ui-key="openBgViewerBtn">Open Fullscreen Viewer</button>
+          <button id="toggleBgSelectBtn" data-ui-key="toggleBgSelectBtn">Select</button>
+          <button id="deleteBgSelectedBtn" disabled data-ui-key="deleteBgSelectedBtn">Delete Selected</button>
+          <button id="clearBgLibraryBtn" data-ui-key="clearBgLibraryBtn">Clear Library</button>
+        </div>
+      </div>
+
+      <div class="settings-item">
+        <label data-ui-key="bgFitLabel">📐 Background Fit</label>
+        <div class="bg-fit-group">
+          <button id="bgFitContainBtn" data-ui-key="bgFitContain">Contain</button>
+          <button id="bgFitCoverBtn" data-ui-key="bgFitCover">Cover</button>
+          <button id="bgFitStretchBtn" data-ui-key="bgFitStretch">Stretch</button>
+          <button id="bgFitCoverTopBtn" data-ui-key="bgFitCoverTop">Cover • Top</button>
+          <button id="bgFitCoverCenterBtn" data-ui-key="bgFitCoverCenter">Cover • Center</button>
+          <button id="bgFitCoverBottomBtn" data-ui-key="bgFitCoverBottom">Cover • Bottom</button>
+          <button id="bgFitContainTopBtn" data-ui-key="bgFitContainTop">Contain • Top</button>
+          <button id="bgFitContainCenterBtn" data-ui-key="bgFitContainCenter">Contain • Center</button>
+          <button id="bgFitContainBottomBtn" data-ui-key="bgFitContainBottom">Contain • Bottom</button>
+          <button id="bgFitFitWidthBtn" data-ui-key="bgFitFitWidth">Fit Width</button>
+          <button id="bgFitFitHeightBtn" data-ui-key="bgFitFitHeight">Fit Height</button>
+        </div>
+      </div>
     </div>
-    <div id="bgLayer" class="bg-layer"></div>
 
-
-    <div id="modelGalleryOverlay" class="model-gallery-overlay" aria-hidden="true">
-      <button class="model-gallery-close" id="modelGalleryCloseBtn" aria-label="Close">×</button>
-      <div class="model-gallery-grid" id="modelGalleryGrid"></div>
+    <div class="settings-group">
+      <h3 data-ui-key="preferencesTitle">⚙️ Preferences</h3>
+      <div class="settings-item">
+        <label data-ui-key="alwaysShowSettingsLabel">
+          <input type="checkbox" id="alwaysShowSettingsCheckbox" />
+          🪄 Always show Settings on page load
+        </label>
+        <div class="value-display" data-ui-desc="alwaysShowSettingsDesc">
+          If enabled, the settings panel opens on every load. Otherwise, it remembers your last open/closed state.
+        </div>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="includeTimeLabel">
+          <input type="checkbox" id="includeTimeCheckbox" checked />
+          ⏱️ Include current time in context
+        </label>
+        <div class="value-display" data-ui-desc="includeTimeDesc">
+          Provides the AI with the current date and time for context-aware responses.
+        </div>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="includeBatteryLabel">
+          <input type="checkbox" id="includeBatteryCheckbox" checked />
+          🔋 Include battery status in context
+        </label>
+        <div class="value-display" data-ui-desc="includeBatteryDesc">
+          Allows the AI to know your device's battery level and charging state.
+        </div>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="multipleModelsLabel">
+          <input type="checkbox" id="multipleModelsCheckbox" />
+          🧬 Load multiple models at once
+        </label>
+        <div class="value-display" data-ui-desc="multipleModelsDesc">When enabled, selecting a model adds it without
+          removing existing ones.</div>
+      </div>
     </div>
 
-    <script src="ui_strings.js"></script>
-    <script src="ui_translator.js"></script>
-    <script src="global_state.js"></script>
-    <!-- Language data has been refactored into smaller pieces -->
-    <script src="languages_full_data.js"></script>
-    <script src="language_data_manager.js"></script>
-    <script src="language_config.js"></script>
-    <script src="voice_config.js"></script>
-    <script src="model_config.js"></script>
-    <script src="utils.js"></script>
-    <script src="debug.js"></script>
-    <script src="particle_system.js"></script>
-    <script src="animation_controller.js"></script>
-    <script src="interaction_handlers.js"></script>
-    <script src="model_controls.js"></script>
-    <script src="live2d_manager.js"></script>
-    <script src="audio_context_manager.js"></script>
-    <script src="sentence_processor.js"></script>
-    <script src="audio_preloader.js"></script>
-    <script src="audio_player.js"></script>
-    <script src="tts_queue_manager.js"></script>
-    <script src="ai_interface.js"></script>
-    <script src="ui_manager.js"></script>
-    <script src="settings_ui.js"></script>
-    <script src="settings_handlers.js"></script>
-    <script src="radio_controller.js"></script>
-    <script src="sound_manager.js"></script>
-    <script src="chat_controller.js"></script>
-    <script src="tutorial.js"></script>
-    <script src="stt_controller.js"></script>
-    <script src="local_fallback_engine.js"></script>
-    <script src="main.js"></script>
-    <script src="app_init.js"></script>
-    <script src="clock.js"></script>
-    <script src="model_gallery.js"></script>
-  </body>
+    <div class="settings-group">
+      <h3 data-ui-key="debugSettingsTitle">🐞 Debug Settings</h3>
+      <div class="settings-item">
+        <label data-ui-key="enableDebuggerLabel">
+          <input type="checkbox" id="enableDebugger" /> 🧰 Enable Debug Panel
+        </label>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="autoScrollLabel">
+          <input type="checkbox" id="autoScroll" checked /> 📜 Auto-scroll Log
+        </label>
+      </div>
+      <div class="settings-item">
+        <button onclick="clearDebugLog()" data-ui-key="clearDebugLogBtn">🧹 Clear Debug Log</button>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="showVerboseLogsLabel">
+          <input type="checkbox" id="showVerboseLogsCheckbox" checked /> 💬 Show Live2d Debug Logs
+        </label>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="showAIDebugLogsLabel">
+          <input type="checkbox" id="showAIDebugLogsCheckbox" checked /> 🧠 Show AI Debug Logs
+        </label>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="showTTSDebugLogsLabel">
+          <input type="checkbox" id="showTTSDebugLogsCheckbox" checked /> 🔊 Show TTS Debug Logs
+        </label>
+      </div>
+      <div class="settings-item">
+        <label data-ui-key="forceOfflineLabel">
+          <input type="checkbox" id="forceOfflineCheckbox" /> 🔌 Test Fallback AI
+        </label>
+      </div>
+    </div>
+
+    <div class="settings-group">
+      <h3 data-ui-key="helpTutorialTitle">❓ Help & Tutorial</h3>
+      <div class="settings-item">
+        <button id="launchTutorialBtn" data-ui-key="launchTutorialBtn">📘 Launch Tutorial</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="nowtime">
+    <p id="time"></p>
+  </div>
+
+  <!-- Radio Stream Player -->
+  <div class="radio-container" style="display: none;">
+    <audio id="radioPlayer" src="https://listen.moe/stream" aria-label="Anime radio stream player"
+      onerror="handleAudioError(this)">
+      Your browser does not support the audio element or the stream format.
+    </audio>
+  </div>
+
+  <!-- Model Selector -->
+  <div id="modelSelectorContainer_old" class="model-selector-container" style="display: none;">
+    <!-- Moved to settings panel -->
+  </div>
+
+  <!-- Language & Display Settings Container -->
+  <div id="languageDisplaySettingsContainer" class="language-display-settings-container" style="display: none;">
+    <!-- Moved to settings panel -->
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <span>💬 Chat</span>
+      <span id="chat-status-indicator">OFFLINE</span>
+    </div>
+    <div class="chat-content">
+      <div class="chat-history" id="chatHistory"></div>
+      <div class="typing-indicator" id="typingIndicator"></div>
+      <div class="chat-input">
+        <button id="searchBtn" class="search-button" aria-label="Toggle search mode" title="Pesquisa (nomnom mode)">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+            <path
+              d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+          </svg>
+        </button>
+        <input type="text" id="messageInput" placeholder="Type your message..." />
+        <button id="micBtn" class="mic-button" aria-label="Start voice input" title="Voice input">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
+            <path
+              d="M12 14a3 3 0 0 0 3-3V7a3 3 0 0 0-6 0v4a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 14 0h-2zM11 19h2v3h-2z" />
+          </svg>
+        </button>
+        <button onclick="sendMessage()">Send</button>
+        <button id="resetChatBtn" onclick="clearChatHistory()">Reset Chat</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="debug-panel" id="debugPanel">
+    <div class="debug-header" id="debugHeader">🧰 Debug Panel</div>
+    <div class="debug-content">
+      <div id="debugLog"></div>
+    </div>
+  </div>
+
+  <div class="tutorial-overlay" id="tutorialOverlay" aria-hidden="true">
+    <div class="tutorial-modal" role="dialog" aria-modal="true" aria-labelledby="tutorialTitle">
+      <h3 id="tutorialTitle">Welcome to the App</h3>
+      <div id="tutorialBody"></div>
+      <div class="tutorial-controls">
+        <button id="tutorialPrevBtn">Back</button>
+        <button id="tutorialNextBtn">Next</button>
+        <button id="tutorialCloseBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="bgViewerOverlay" class="bg-viewer-overlay" aria-hidden="true">
+    <button class="bg-viewer-close" id="bgViewerCloseBtn" aria-label="Close">×</button>
+    <button class="bg-viewer-nav prev" id="bgViewerPrevBtn" aria-label="Previous">‹</button>
+    <img id="bgViewerImage" alt="Background preview">
+    <button class="bg-viewer-nav next" id="bgViewerNextBtn" aria-label="Next">›</button>
+    <div id="bgViewerCounter" class="bg-viewer-counter"></div>
+  </div>
+  <div id="bgLayer" class="bg-layer"></div>
+
+
+  <div id="modelGalleryOverlay" class="model-gallery-overlay" aria-hidden="true">
+    <button class="model-gallery-close" id="modelGalleryCloseBtn" aria-label="Close">×</button>
+    <div class="model-gallery-grid" id="modelGalleryGrid"></div>
+  </div>
+
+  <script src="ui_strings.js"></script>
+  <script src="ui_translator.js"></script>
+  <script src="global_state.js"></script>
+  <!-- Language data has been refactored into smaller pieces -->
+  <script src="languages_full_data.js"></script>
+  <script src="language_data_manager.js"></script>
+  <script src="language_config.js"></script>
+  <script src="voice_config.js"></script>
+  <script src="model_config.js"></script>
+  <script src="utils.js"></script>
+  <script src="debug.js"></script>
+  <script src="particle_system.js"></script>
+  <script src="animation_controller.js"></script>
+  <script src="interaction_handlers.js"></script>
+  <script src="model_controls.js"></script>
+  <script src="live2d_manager.js"></script>
+  <script src="audio_context_manager.js"></script>
+  <script src="sentence_processor.js"></script>
+  <script src="audio_preloader.js"></script>
+  <script src="audio_player.js"></script>
+  <script src="tts_queue_manager.js"></script>
+  <script src="ai_interface.js"></script>
+  <script src="ui_manager.js"></script>
+  <script src="settings_ui.js"></script>
+  <script src="settings_handlers.js"></script>
+  <script src="radio_controller.js"></script>
+  <script src="sound_manager.js"></script>
+  <script src="chat_controller.js"></script>
+  <script src="tutorial.js"></script>
+  <script src="stt_controller.js"></script>
+  <script src="local_fallback_engine.js"></script>
+  <script src="main.js"></script>
+  <script src="app_init.js"></script>
+  <script src="clock.js"></script>
+  <script src="model_gallery.js"></script>
+</body>
+
 </html>

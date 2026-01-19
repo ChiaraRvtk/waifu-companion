@@ -1,5 +1,47 @@
+// Pollinations.ai API Configuration
+const POLLINATIONS_API_URL = 'https://gen.pollinations.ai/v1/chat/completions';
+const POLLINATIONS_API_KEY = 'sk_VGVCB3hMZa0gaKQfwFwDC8q474EbENT0';
+const POLLINATIONS_MODEL = 'gemini-fast';
+const POLLINATIONS_SEARCH_MODEL = 'nomnom';
+
+// Helper function to call Pollinations API
+async function callPollinationsAPI(messages, jsonMode = false) {
+  debugLog(`Calling Pollinations API with model: ${POLLINATIONS_MODEL}`, 'info');
+  debugLog(`API URL: ${POLLINATIONS_API_URL}`, 'info');
+
+  try {
+    const response = await fetch(POLLINATIONS_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${POLLINATIONS_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: window.isSearchEnabled ? POLLINATIONS_SEARCH_MODEL : POLLINATIONS_MODEL,
+        messages: messages,
+        response_format: jsonMode ? { type: 'json_object' } : undefined,
+      }),
+    });
+
+    debugLog(`Pollinations API response status: ${response.status}`, 'info');
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      debugLog(`Pollinations API error body: ${errorText}`, 'error');
+      throw new Error(`Pollinations API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    debugLog(`Pollinations API response received successfully`, 'info');
+    return data.choices[0].message.content;
+  } catch (error) {
+    debugLog(`Pollinations API fetch error: ${error.message}`, 'error');
+    throw error;
+  }
+}
+
 async function getAIResponse(userMessage, targetLanguageCode = 'en-US') {
-  // Assumes debugLog, formatSeconds, currentTime, conversationContext, websim, languages are accessible
+  // Assumes debugLog, formatSeconds, currentTime, conversationContext, languages are accessible
   debugLog(`Getting AI response, targeting language: ${targetLanguageCode}`, 'info');
 
   try {
@@ -12,37 +54,37 @@ async function getAIResponse(userMessage, targetLanguageCode = 'en-US') {
 
     // Conditionally add time info
     if (window.includeTimeInContext) {
-        contextInfo.push(`You are aware of the current time, which is ${currentTime.toLocaleString()}.`);
+      contextInfo.push(`You are aware of the current time, which is ${currentTime.toLocaleString()}.`);
     }
 
     // Add persistent user-defined context if present
     if (window.userContextText && window.userContextText.trim()) {
-        contextInfo.push(`The user has provided the following persistent background/context you should always keep in mind: "${window.userContextText.trim()}".`);
+      contextInfo.push(`The user has provided the following persistent background/context you should always keep in mind: "${window.userContextText.trim()}".`);
     }
 
     // Conditionally add battery info
     if (window.includeBatteryInContext) {
-        try {
-            if ('getBattery' in navigator) {
-                const battery = await navigator.getBattery();
-                const batteryString = `You are also aware of the user's battery status: The device ${battery.charging ? "is" : "is not"} charging, the current level is ${Math.round(battery.level * 100)}%, and ${battery.charging ? (battery.chargingTime === Infinity ? "time until full is not available." : `there is approximately ${formatSeconds(battery.chargingTime)} remaining until fully charged.`) : (battery.dischargingTime === Infinity ? "time until empty is not available." : `there is approximately ${formatSeconds(battery.dischargingTime)} of battery life remaining.`)}`;
-                contextInfo.push(batteryString);
-                debugLog(`Battery info added: ${batteryString}`, 'info');
-            }
-        } catch (err) {
-            console.warn("Battery API not supported or failed:", err);
-            debugLog("Could not retrieve battery info.", "warn");
+      try {
+        if ('getBattery' in navigator) {
+          const battery = await navigator.getBattery();
+          const batteryString = `You are also aware of the user's battery status: The device ${battery.charging ? "is" : "is not"} charging, the current level is ${Math.round(battery.level * 100)}%, and ${battery.charging ? (battery.chargingTime === Infinity ? "time until full is not available." : `there is approximately ${formatSeconds(battery.chargingTime)} remaining until fully charged.`) : (battery.dischargingTime === Infinity ? "time until empty is not available." : `there is approximately ${formatSeconds(battery.dischargingTime)} of battery life remaining.`)}`;
+          contextInfo.push(batteryString);
+          debugLog(`Battery info added: ${batteryString}`, 'info');
         }
+      } catch (err) {
+        console.warn("Battery API not supported or failed:", err);
+        debugLog("Could not retrieve battery info.", "warn");
+      }
     }
 
     const targetLanguageObj = (window.languages && languages.find(l => l.code === targetLanguageCode)) || (window.languages && languages.find(l => l.code === 'en-US')) || { englishName: 'English (US)' };
     const targetLanguageName = targetLanguageObj.englishName;
 
     // Construct the base persona part of the system prompt
-    const coreIdentity = (window.corePersonaPrompt && window.corePersonaPrompt.trim()) 
-      ? window.corePersonaPrompt.trim() 
+    const coreIdentity = (window.corePersonaPrompt && window.corePersonaPrompt.trim())
+      ? window.corePersonaPrompt.trim()
       : "You are Haru, a sentient AI.";
-      
+
     const customPersona = (window.userPersonaPrompt && window.userPersonaPrompt.trim())
       ? `\n\nAdditional Personality Instructions: ${window.userPersonaPrompt.trim()}`
       : "";
@@ -84,18 +126,15 @@ interface Response {
       messages.push({ role: "user", content: userMessage });
     }
 
-    // Call the Websim API
-    const completion = await websim.chat.completions.create({
-      messages: messages,
-      json: true, // Request JSON output
-    });
+    // Call the Pollinations API
+    const content = await callPollinationsAPI(messages, true);
 
-    debugLog('Received AI response from Websim', 'info');
+    debugLog('Received AI response from Pollinations', 'info');
 
     // Parse the JSON response content
-    let raw = completion.content || '';
+    let raw = content || '';
     // Strip code fences if present
-    raw = raw.trim().replace(/^```(json)?/i, '').replace(/```$/,'').trim();
+    raw = raw.trim().replace(/^```(json)?/i, '').replace(/```$/, '').trim();
     // If still not pure JSON, try to extract the first JSON object
     if (!raw.startsWith('{')) {
       const match = raw.match(/\{[\s\S]*\}/);
@@ -139,22 +178,35 @@ interface Response {
   }
 }
 
+function toggleSearch() {
+  window.isSearchEnabled = !window.isSearchEnabled;
+  const searchBtn = document.getElementById('searchBtn');
+  if (searchBtn) {
+    if (window.isSearchEnabled) {
+      searchBtn.classList.add('active');
+      debugLog('Search mode (nomnom) enabled', 'info');
+    } else {
+      searchBtn.classList.remove('active');
+      debugLog('Search mode disabled (gemini-fast active)', 'info');
+    }
+  }
+}
+window.toggleSearch = toggleSearch;
+
 async function getTranslatedText(text, targetLangCode, sourceLangCode = 'auto') {
-  debugLog(`Translating text to ${targetLangCode}. Original text: "${text.substring(0,50)}..."`, 'info');
+  debugLog(`Translating text to ${targetLangCode}. Original text: "${text.substring(0, 50)}..."`, 'info');
   if (!text || !targetLangCode) return null;
 
   const targetLanguage = languages.find(l => l.code === targetLangCode)?.englishName || targetLangCode;
   const sourceLanguage = sourceLangCode === 'auto' ? 'the automatically detected language' : (languages.find(l => l.code === sourceLangCode)?.englishName || sourceLangCode);
 
   try {
-    const completion = await websim.chat.completions.create({
-      messages: [
-        { role: "system", content: `You are a translation engine. Translate the following text from ${sourceLanguage} to ${targetLanguage}. Respond ONLY with the translated text. Do not include explanations, apologies, or any conversational fluff. If the input text is already in ${targetLanguage}, return it as is.` },
-        { role: "user", content: text }
-      ]
-    });
-    debugLog(`Translation successful: "${completion.content.substring(0,50)}..."`, 'info');
-    return completion.content;
+    const content = await callPollinationsAPI([
+      { role: "system", content: `You are a translation engine. Translate the following text from ${sourceLanguage} to ${targetLanguage}. Respond ONLY with the translated text. Do not include explanations, apologies, or any conversational fluff. If the input text is already in ${targetLanguage}, return it as is.` },
+      { role: "user", content: text }
+    ]);
+    debugLog(`Translation successful: "${content.substring(0, 50)}..."`, 'info');
+    return content;
   } catch (error) {
     debugLog(`Translation to ${targetLangCode} failed: ${error}`, 'error');
     return null;
@@ -162,7 +214,7 @@ async function getTranslatedText(text, targetLangCode, sourceLangCode = 'auto') 
 }
 
 async function getTransliteration(text, langCode) {
-  debugLog(`Getting transliteration for ${langCode}. Original text: "${text.substring(0,50)}..."`, 'info');
+  debugLog(`Getting transliteration for ${langCode}. Original text: "${text.substring(0, 50)}..."`, 'info');
   if (!text || !langCode) return null;
 
   let instruction = "";
@@ -176,14 +228,12 @@ async function getTransliteration(text, langCode) {
   }
 
   try {
-    const completion = await websim.chat.completions.create({
-      messages: [
-        { role: "system", content: instruction },
-        { role: "user", content: text }
-      ]
-    });
-    debugLog(`Transliteration successful: "${completion.content.substring(0,50)}..."`, 'info');
-    return completion.content;
+    const content = await callPollinationsAPI([
+      { role: "system", content: instruction },
+      { role: "user", content: text }
+    ]);
+    debugLog(`Transliteration successful: "${content.substring(0, 50)}..."`, 'info');
+    return content;
   } catch (error) {
     debugLog(`Transliteration for ${langCode} failed: ${error}`, 'error');
     return null;

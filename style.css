@@ -6,7 +6,8 @@
 body {
   margin: 0;
   overflow: hidden;
-  background: #2f3437; /* Base color seen behind transparent backgrounds */
+  background: #2f3437;
+  /* Base color seen behind transparent backgrounds */
 }
 
 .bg-layer {
@@ -45,9 +46,14 @@ canvas {
   z-index: 9999;
   resize: both;
   overflow: hidden;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
   border: 2px solid rgba(255, 255, 255, 0.1);
-  cursor: default; /* Change main cursor to default, header will be move */
-  touch-action: none; /* Help with dragging on mobile */
+  cursor: default;
+  /* Change main cursor to default, header will be move */
+  touch-action: none;
+  /* Help with dragging on mobile */
 }
 
 .chat-container:hover {
@@ -67,8 +73,17 @@ canvas {
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 15px rgba(255, 105, 180, 0.4); border-color: rgba(255, 105, 180, 0.3); }
-  50% { box-shadow: 0 0 30px rgba(255, 105, 180, 0.7); border-color: rgba(255, 105, 180, 0.6); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.4);
+    border-color: rgba(255, 105, 180, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 30px rgba(255, 105, 180, 0.7);
+    border-color: rgba(255, 105, 180, 0.6);
+  }
 }
 
 #chat-status-indicator {
@@ -110,9 +125,10 @@ canvas {
 
 .chat-content {
   margin-top: 35px;
-  height: calc(100% - 35px);
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 .chat-history {
@@ -121,12 +137,28 @@ canvas {
   padding: 10px;
   flex: 1;
   min-height: 100px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.chat-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
 }
 
 .message {
   margin: 15px 0;
   padding: 8px;
-  padding-bottom: 12px; /* Extra space for action buttons */
+  padding-bottom: 12px;
+  /* Extra space for action buttons */
   border-radius: 5px;
   display: flex;
   flex-direction: column;
@@ -144,7 +176,7 @@ canvas {
   border-radius: 6px;
   z-index: 10;
   backdrop-filter: blur(4px);
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .message:hover .message-actions {
@@ -307,10 +339,64 @@ canvas {
   z-index: 1;
 }
 
-.mic-button:hover { background: #444; }
-.mic-button.active { background: #c62828; }
+.mic-button:hover {
+  background: #444;
+}
 
-.mic-button svg { pointer-events: none; }
+.mic-button.active {
+  background: #c62828;
+}
+
+.mic-button svg {
+  pointer-events: none;
+}
+
+.search-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 12px;
+  border: none;
+  border-radius: 5px;
+  background: #333;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  z-index: 1;
+}
+
+.search-button:hover {
+  background: #444;
+}
+
+.search-button.active {
+  background: #00d2ff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 210, 255, 0.7);
+  animation: pulse-search 2s infinite;
+}
+
+@keyframes pulse-search {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0.7);
+    transform: scale(1);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 210, 255, 0);
+    transform: scale(1.05);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 210, 255, 0);
+    transform: scale(1);
+  }
+}
+
+.search-button svg {
+  pointer-events: none;
+}
 
 .settings-button {
   position: fixed;
@@ -451,8 +537,15 @@ canvas {
 }
 
 @keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 .debug-panel {
@@ -533,7 +626,8 @@ canvas {
 
 /* Navigation controls now live inside the Settings panel */
 .navigation-controls {
-  display: none; /* hidden until the checkbox enables it */
+  display: none;
+  /* hidden until the checkbox enables it */
   grid-template-areas:
     ". up ."
     "left zoom-in right"
@@ -562,12 +656,29 @@ canvas {
 }
 
 /* Keep grid areas so UIManager/app_init logic remains intact */
-#zoomInBtn { grid-area: zoom-in; }
-#zoomOutBtn { grid-area: zoom-out; }
-#moveUpBtn { grid-area: up; }
-#moveDownBtn { grid-area: down; }
-#moveLeftBtn { grid-area: left; }
-#moveRightBtn { grid-area: right; }
+#zoomInBtn {
+  grid-area: zoom-in;
+}
+
+#zoomOutBtn {
+  grid-area: zoom-out;
+}
+
+#moveUpBtn {
+  grid-area: up;
+}
+
+#moveDownBtn {
+  grid-area: down;
+}
+
+#moveLeftBtn {
+  grid-area: left;
+}
+
+#moveRightBtn {
+  grid-area: right;
+}
 
 /* Model selector styles for settings panel */
 .settings-panel .model-selector-selected {
@@ -756,7 +867,7 @@ canvas {
   border-radius: 50%;
   cursor: pointer;
   margin-top: -5px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 #radioVolumeSlider::-moz-range-thumb {
@@ -765,7 +876,7 @@ canvas {
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 #radioVolumeSlider::-ms-thumb {
@@ -774,7 +885,7 @@ canvas {
   background: #007bff;
   border-radius: 50%;
   cursor: pointer;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 .hidden {
@@ -795,8 +906,13 @@ canvas {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .tutorial-overlay.visible {
@@ -820,8 +936,15 @@ canvas {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(30px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .tutorial-modal h3 {
@@ -871,7 +994,7 @@ canvas {
   overflow-y: auto;
   line-height: 1.7;
   scrollbar-width: thin;
-  scrollbar-color: rgba(255,255,255,0.2) transparent;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
 }
 
 #tutorialBody::-webkit-scrollbar {
@@ -879,7 +1002,7 @@ canvas {
 }
 
 #tutorialBody::-webkit-scrollbar-thumb {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border-radius: 3px;
 }
 
@@ -922,47 +1045,220 @@ canvas {
 }
 
 #bgLibrary {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
 }
 
 #bgLibrary img {
-  width: 100%; height: 64px; object-fit: cover; border-radius: 6px; cursor: pointer; border: 1px solid rgba(255,255,255,0.15);
+  width: 100%;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-#bgLibrary img.selected { outline: 3px solid #007bff; outline-offset: 0; }
+#bgLibrary img.selected {
+  outline: 3px solid #007bff;
+  outline-offset: 0;
+}
 
 /* Fullscreen viewer */
-.bg-viewer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;z-index:10003;align-items:center;justify-content:center}
-.bg-viewer-overlay.visible{display:flex}
-.bg-viewer-overlay img{max-width:92vw;max-height:92vh;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.6)}
-.bg-viewer-close{position:absolute;top:16px;right:20px;background:#333;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer}
-.bg-viewer-nav{position:absolute;top:50%;transform:translateY(-50%);background:#333;color:#fff;border:none;border-radius:6px;padding:10px 14px;cursor:pointer}
-.bg-viewer-nav.prev{left:20px}
-.bg-viewer-nav.next{right:20px}
-.bg-viewer-counter{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);color:#ddd;font-size:12px;background:rgba(255,255,255,0.08);padding:4px 8px;border-radius:6px}
+.bg-viewer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  z-index: 10003;
+  align-items: center;
+  justify-content: center
+}
+
+.bg-viewer-overlay.visible {
+  display: flex
+}
+
+.bg-viewer-overlay img {
+  max-width: 92vw;
+  max-height: 92vh;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6)
+}
+
+.bg-viewer-close {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer
+}
+
+.bg-viewer-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 14px;
+  cursor: pointer
+}
+
+.bg-viewer-nav.prev {
+  left: 20px
+}
+
+.bg-viewer-nav.next {
+  right: 20px
+}
+
+.bg-viewer-counter {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ddd;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 4px 8px;
+  border-radius: 6px
+}
 
 
 
-#customModelInfo .custom-model-info{display:flex;gap:10px;align-items:center;background:rgba(255,255,255,0.05);padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.1)}
-#customModelInfo img{width:40px;height:40px;object-fit:cover;border-radius:6px;border:1px solid rgba(255,255,255,0.2)}
-#customModelInfo .meta{flex:1;min-width:0}
-#customModelInfo .meta .name{color:#eee;font-size:14px;font-weight:600}
-#customModelInfo .meta .url{color:#9ecbff;font-size:12px;word-break:break-all}
-#customModelInfo .remove-btn{background:#dc3545;border:none;color:#fff;border-radius:6px;padding:6px 10px;cursor:pointer}
-#customModelInfo .remove-btn:hover{background:#c82333}
+#customModelInfo .custom-model-info {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1)
+}
 
-.bg-fit-group { display:flex; flex-wrap: wrap; gap:6px }
-.bg-fit-group button{background:#333;color:#fff;border:1px solid #555;border-radius:6px;padding:6px 10px;cursor:pointer}
-.bg-fit-group button.active{background:#007bff;border-color:#007bff}
+#customModelInfo img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2)
+}
 
-.model-gallery-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.9);display:none;z-index:10020;overflow:auto}
-.model-gallery-overlay.visible{display:block}
-.model-gallery-close{position:fixed;top:16px;right:20px;background:#333;color:#fff;border:none;border-radius:6px;padding:6px 10px;cursor:pointer}
-.model-gallery-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;padding:80px 24px 24px}
-.model-card{background:#1f1f1f;border:1px solid rgba(255,255,255,0.1);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .15s, border-color .15s}
-.model-card:hover{transform:translateY(-2px);border-color:rgba(255,255,255,0.25)}
-.model-thumb{width:100%;height:220px;object-fit:cover;background:#000}
-.model-name{padding:10px 12px;color:#eee;font-size:14px;text-align:center}
+#customModelInfo .meta {
+  flex: 1;
+  min-width: 0
+}
+
+#customModelInfo .meta .name {
+  color: #eee;
+  font-size: 14px;
+  font-weight: 600
+}
+
+#customModelInfo .meta .url {
+  color: #9ecbff;
+  font-size: 12px;
+  word-break: break-all
+}
+
+#customModelInfo .remove-btn {
+  background: #dc3545;
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer
+}
+
+#customModelInfo .remove-btn:hover {
+  background: #c82333
+}
+
+.bg-fit-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px
+}
+
+.bg-fit-group button {
+  background: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer
+}
+
+.bg-fit-group button.active {
+  background: #007bff;
+  border-color: #007bff
+}
+
+.model-gallery-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: none;
+  z-index: 10020;
+  overflow: auto
+}
+
+.model-gallery-overlay.visible {
+  display: block
+}
+
+.model-gallery-close {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer
+}
+
+.model-gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 80px 24px 24px
+}
+
+.model-card {
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform .15s, border-color .15s
+}
+
+.model-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.25)
+}
+
+.model-thumb {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  background: #000
+}
+
+.model-name {
+  padding: 10px 12px;
+  color: #eee;
+  font-size: 14px;
+  text-align: center
+}
 
 /* Mobile Responsive Adjustments */
 @media (max-width: 768px) {
@@ -970,7 +1266,8 @@ canvas {
     width: calc(100% - 20px) !important;
     left: 10px !important;
     bottom: 10px !important;
-    transform: none !important; /* Force reset layout to mobile default */
+    transform: none !important;
+    /* Force reset layout to mobile default */
     max-width: none;
     min-width: 0;
     height: 40vh;
@@ -996,7 +1293,8 @@ canvas {
   .message {
     margin: 10px 0;
     font-size: 14px;
-    padding-bottom: 24px; /* Ensure space for overlapping action buttons */
+    padding-bottom: 24px;
+    /* Ensure space for overlapping action buttons */
   }
 
   .user-message {
@@ -1008,7 +1306,8 @@ canvas {
   }
 
   .message-actions {
-    display: flex; /* Always show on mobile since there is no hover */
+    display: flex;
+    /* Always show on mobile since there is no hover */
     bottom: -10px;
     opacity: 1;
     transform: scale(0.85);
@@ -1027,9 +1326,10 @@ canvas {
     padding: 15px;
   }
 
-  .settings-item .settings-select, 
+  .settings-item .settings-select,
   .settings-item .settings-textarea {
-    font-size: 16px; /* Prevent iOS zoom on focus */
+    font-size: 16px;
+    /* Prevent iOS zoom on focus */
   }
 
   .debug-panel {
@@ -1058,7 +1358,8 @@ canvas {
     height: 44px;
   }
 
-  .mic-button, .chat-input button {
+  .mic-button,
+  .chat-input button {
     padding: 8px 10px;
     font-size: 13px;
   }
@@ -1096,7 +1397,7 @@ canvas {
     width: 40%;
     height: 60vh;
   }
-  
+
   .settings-panel {
     width: 300px;
   }

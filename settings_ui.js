@@ -224,81 +224,115 @@ function populateVoiceSelector() {
   // Add "None" option first
   const noneOption = document.createElement('option');
   noneOption.value = 'none';
-  noneOption.textContent = 'None';
+  noneOption.textContent = 'None (Disable TTS)';
   voiceSelector.appendChild(noneOption);
 
-  // Requirement: Display ALL WebSim TTS voices regardless of language selection.
-  const uniqueVoices = new Map();
+  // Add all Pollinations voices
   voices.forEach(voice => {
-    if (!uniqueVoices.has(voice.id)) {
-      uniqueVoices.set(voice.id, voice);
-    }
-  });
-
-  const availableVoices = Array.from(uniqueVoices.values());
-
-  availableVoices.forEach(voice => {
     const option = document.createElement('option');
     option.value = voice.id;
-    const providerLabel = voice.provider === 'tiktok' ? 'TikTok' : voice.provider === 'streamelements' ? 'StreamElements' : 'WebSim';
-    // Only show provider suffix if it's not the default WebSim provider
-    option.textContent = voice.provider === 'websim' ? voice.name : `${voice.name} (${providerLabel})`;
+    const genderIcon = voice.gender === 'female' ? '👩' : voice.gender === 'male' ? '👨' : '🎭';
+    option.textContent = `${genderIcon} ${voice.name}`;
     voiceSelector.appendChild(option);
   });
 
-  // Determine the best voice for the current language
-  // Uses voiceLanguageOverrides to find a fallback voice for languages without native TTS
-  function getDefaultVoiceForLanguage(langCode) {
-    const baseLangCode = langCode.split('-')[0];
-
-    // Check if this language has an override mapping
-    const overrides = window.voiceLanguageOverrides || {};
-    const overrideLang = overrides[langCode] || overrides[baseLangCode];
-
-    // Determine which base language to look for
-    const targetBaseLang = overrideLang || baseLangCode;
-
-    // Find female voice for the target language
-    const femaleVoice = availableVoices.find(v =>
-      v.language.split('-')[0] === targetBaseLang &&
-      v.gender === 'female' &&
-      v.provider === 'websim'
-    );
-
-    if (femaleVoice) {
-      return femaleVoice.id;
-    }
-
-    // Fallback: check langConfig's defaultVoiceId
-    const langConfig = languages.find(l => l.code === langCode);
-    if (langConfig && langConfig.defaultVoiceId) {
-      // Check if that defaultVoiceId is a valid voice
-      if (availableVoices.some(v => v.id === langConfig.defaultVoiceId)) {
-        return langConfig.defaultVoiceId;
-      }
-    }
-
-    // Final fallback: English female or first available
-    const enFemale = availableVoices.find(v => v.id === 'en-female');
-    return enFemale ? 'en-female' : (availableVoices[0]?.id || 'none');
+  // Handle legacy voice IDs from old WebSim config
+  let savedVoiceId = localStorage.getItem('selectedVoiceId');
+  if (savedVoiceId && window.legacyVoiceMap && window.legacyVoiceMap[savedVoiceId]) {
+    savedVoiceId = window.legacyVoiceMap[savedVoiceId];
+    localStorage.setItem('selectedVoiceId', savedVoiceId);
   }
 
-  // Get the default voice for current language
-  const defaultVoiceForLang = getDefaultVoiceForLanguage(selectedLanguageCode);
-
-  // Check if user explicitly set to 'none'
-  const savedVoiceId = localStorage.getItem('selectedVoiceId');
+  // Set the selected voice
   if (savedVoiceId === 'none') {
     selectedVoiceId = 'none';
+  } else if (savedVoiceId && voices.some(v => v.id === savedVoiceId)) {
+    selectedVoiceId = savedVoiceId;
   } else {
-    // Always use the appropriate default voice for the current language
-    // This ensures voice switches when language changes
-    selectedVoiceId = defaultVoiceForLang;
+    // Default to 'nova' (friendly female voice)
+    selectedVoiceId = window.defaultVoiceId || 'nova';
     localStorage.setItem('selectedVoiceId', selectedVoiceId);
   }
 
   voiceSelector.value = selectedVoiceId;
-  debugLog(`Voice selector populated. Language: ${selectedLanguageCode}, Selected voice: ${selectedVoiceId}`, 'info');
+  updateVoiceDescription(selectedVoiceId);
+
+  // Add change handler to update description (only once)
+  if (!voiceSelector.dataset.descListenerAttached) {
+    voiceSelector.dataset.descListenerAttached = 'true';
+    voiceSelector.addEventListener('change', (e) => {
+      updateVoiceDescription(e.target.value);
+    });
+  }
+
+  debugLog(`Voice selector populated with ${voices.length} Pollinations voices. Selected: ${selectedVoiceId}`, 'info');
+
+  // Setup test voice button
+  setupTestVoiceButton();
+}
+
+function updateVoiceDescription(voiceId) {
+  const descEl = document.getElementById('voiceDescription');
+  if (!descEl) return;
+
+  if (voiceId === 'none') {
+    descEl.textContent = 'TTS disabled - no voice will be played';
+    return;
+  }
+
+  const voice = voices.find(v => v.id === voiceId);
+  if (voice && voice.description) {
+    descEl.textContent = voice.description;
+  } else {
+    descEl.textContent = 'High-quality voice powered by Pollinations AI';
+  }
+}
+
+function setupTestVoiceButton() {
+  const testBtn = document.getElementById('testVoiceBtn');
+  const testInput = document.getElementById('testVoiceText');
+
+  if (!testBtn || !testInput) return;
+
+  // Prevent adding duplicate listeners
+  if (testBtn.dataset.listenerAttached === 'true') return;
+  testBtn.dataset.listenerAttached = 'true';
+
+  testBtn.addEventListener('click', async () => {
+    const text = testInput.value.trim();
+    if (!text) {
+      debugLog('TTS Test: No text to speak', 'warn');
+      return;
+    }
+
+    const voiceId = voiceSelector.value;
+    if (voiceId === 'none') {
+      debugLog('TTS Test: Voice is set to None', 'warn');
+      alert('Please select a voice first');
+      return;
+    }
+
+    testBtn.disabled = true;
+    testBtn.textContent = '🔄 Testing...';
+
+    try {
+      debugLog(`TTS Test: Testing voice "${voiceId}" with text: "${text}"`, 'info');
+
+      // Call the TTS function directly
+      if (typeof fetchTTSBuffer === 'function' && typeof tryPlaySingleChunk === 'function') {
+        await tryPlaySingleChunk(text, voiceId);
+        debugLog('TTS Test: Playback completed', 'info');
+      } else {
+        throw new Error('TTS functions not available');
+      }
+    } catch (error) {
+      debugLog(`TTS Test failed: ${error.message}`, 'error');
+      alert(`Voice test failed: ${error.message}`);
+    } finally {
+      testBtn.disabled = false;
+      testBtn.textContent = '▶️ Test';
+    }
+  });
 }
 
 
