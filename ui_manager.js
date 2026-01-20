@@ -200,6 +200,18 @@ function showTypingIndicator(show) {
   }
 }
 
+function showTTSLoadingIndicator(show) {
+  const indicator = document.getElementById('ttsLoadingIndicator');
+  if (!indicator) return;
+
+  if (show) {
+    indicator.style.display = "flex";
+  } else {
+    indicator.style.display = "none";
+  }
+}
+window.showTTSLoadingIndicator = showTTSLoadingIndicator;
+
 function clearChatHistory() {
   // Assumes chatHistory, conversationContext, debugLog are accessible
   debugLog('Clearing chat history and localStorage', 'info');

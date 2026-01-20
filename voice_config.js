@@ -49,12 +49,25 @@ window.TTS_CONFIG = {
     exaggeration: 1.3,
     cfg_weight: 0.5,
     speed_factor: 1,
-    seed: 3000,
+    seed: 2000,
     voice_mode: 'clone',
     split_text: true,
-    chunk_size: 240,
+    chunk_size: 200,
     output_format: 'wav',
     // predefined_voice_id: "Emily.wav"
+  }
+};
+
+window.KITTEN_TTS_CONFIG = {
+  apiUrl: 'http://localhost:8005/tts',
+  defaultSettings: {
+    language: 'en',
+    output_format: 'wav',
+    speed: 1.1,
+    split_text: true,
+    chunk_size: 240,
+    voice: 'expr-voice-5-f'
+
   }
 };
 

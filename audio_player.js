@@ -22,7 +22,7 @@ async function playCachedAudioBuffer(audioBuffer, text) {
       const bufferLength = analyserNode.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
       let lastVolume = 0;
-      const smoothingFactor = 0.3;
+      const smoothingFactor = 0.8;
 
       const updateMouth = () => {
         if (currentAudio !== source || !currentModel) {
@@ -36,14 +36,25 @@ async function playCachedAudioBuffer(audioBuffer, text) {
           return;
         }
         analyserNode.getByteFrequencyData(dataArray);
-        const vocalRange = dataArray.slice(10, 100);
-        const volume = vocalRange.reduce((acc, val) => acc + val, 0) / vocalRange.length;
+
+        // Broader speech range: index 2 to 40 (roughly 100Hz to 2kHz)
+        const speechRange = dataArray.slice(45, 50);
+        let average = speechRange.reduce((acc, val) => acc + val, 0) / speechRange.length;
+
+        // Stable noise floor threshold
+        const threshold = 50;
+        if (average < threshold) average = 0;
+        else average -= threshold;
+
+        const volume = average;
         const smoothedVolume = lastVolume + (volume - lastVolume) * smoothingFactor;
         lastVolume = smoothedVolume;
-        const normalizedVolume = Math.min(smoothedVolume / 128, 1);
 
-        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", normalizedVolume * 1.5);
-        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", normalizedVolume * 0.5 - 0.25);
+        // Safe normalization: ensures 0.0 to 1.0 range
+        const normalizedVolume = Math.min(smoothedVolume / 120, 1.0);
+
+        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", normalizedVolume);
+        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", normalizedVolume * 0.4);
         animationFrameId = requestAnimationFrame(updateMouth);
       };
       updateMouth();
@@ -61,7 +72,7 @@ async function playCachedAudioBuffer(audioBuffer, text) {
 
         if (currentModel && currentAudio === source) {
           currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
-          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
         }
         try {
           if (source && (source.playbackState === source.PLAYING_STATE || source.playbackState === source.SCHEDULED_STATE)) {
@@ -80,7 +91,7 @@ async function playCachedAudioBuffer(audioBuffer, text) {
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         if (currentModel && currentAudio === source) {
           currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
-          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
         }
         resolve();
       };
@@ -117,6 +128,10 @@ async function fetchTTSBuffer(textChunk, voiceId) {
 
   debugLog(`TTS: Using Custom TTS API with language: ${language}`, 'info');
 
+  if (typeof window.showTTSLoadingIndicator === 'function') {
+    window.showTTSLoadingIndicator(true);
+  }
+
   try {
     debugLog(`TTS: Fetching buffer for text chunk (${textChunk.length} chars): "${textChunk.substring(0, 30)}..."`, 'info');
     const response = await fetch(TTS_API_URL, {
@@ -138,6 +153,13 @@ async function fetchTTSBuffer(textChunk, voiceId) {
         output_format: settings.output_format || 'wav',
         reference_audio_filename: config.referenceAudio || 'tmpstjl0ktl.wav',
         predefined_voice_id: config.predefined_voice_id || 'Emily.wav'
+        //-- KITTEN TTS
+        // language: settings.language,
+        // output_format: settings.output_format,
+        // speed: settings.speed,
+        // split_text: settings.split_text,
+        // chunk_size: settings.chunk_size,
+        // voice: settings.voice
       }),
     });
 
@@ -151,9 +173,16 @@ async function fetchTTSBuffer(textChunk, voiceId) {
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
     debugLog(`TTS: Audio buffer decoded successfully (${audioBuffer.duration.toFixed(2)}s)`, 'info');
+
+    if (typeof window.showTTSLoadingIndicator === 'function') {
+      window.showTTSLoadingIndicator(false);
+    }
     return audioBuffer;
   } catch (error) {
     debugLog(`TTS: Custom TTS failed: ${error.message}`, 'error');
+    if (typeof window.showTTSLoadingIndicator === 'function') {
+      window.showTTSLoadingIndicator(false);
+    }
     // No fallback - just return null to skip TTS
     return null;
   }
@@ -187,7 +216,10 @@ async function tryPlaySingleChunk(textChunk, voiceId, attempt = 0, preloadedBuff
     }
 
     source = audioContext.createBufferSource();
+
     currentAudio = source; // Store current source for external stop capability
+
+
 
     const audioBufferSource = source;
     audioBufferSource.buffer = audioBuffer;
@@ -196,39 +228,59 @@ async function tryPlaySingleChunk(textChunk, voiceId, attempt = 0, preloadedBuff
     if (currentModel) {
       const analyserNode = getTTSAnalyser();
       audioBufferSource.connect(analyserNode);
+
+
       // analyserNode is already connected to destination by getTTSAnalyser if it was (re)created.
 
       const bufferLength = analyserNode.frequencyBinCount;
       const dataArray = new Uint8Array(bufferLength);
       let lastVolume = 0;
-      const smoothingFactor = 0.3;
+      const smoothingFactor = 0.8;
 
       const updateMouth = () => {
         // Check if this specific source is still the one playing AND the model exists
+        // console.log(currentAudio)
         if (currentAudio !== source || !currentModel) {
           cancelAnimationFrame(animationFrameId);
           // Optionally reset mouth here if this was the active source
+
           if (currentModel && source.buffer) { // Check source.buffer to ensure it was a playing source
             // Check if this was the last playing audio for this model instance
+            console.log("oi2")
             if (!currentAudio || currentAudio.context.state === 'closed') {
+              console.log("oi3")
               currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
-              currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+              currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
             }
           }
           return;
         }
         analyserNode.getByteFrequencyData(dataArray);
-        const vocalRange = dataArray.slice(10, 100);
-        const volume = vocalRange.reduce((acc, val) => acc + val, 0) / vocalRange.length;
+
+        // Broader speech range: index 2 to 40
+        const speechRange = dataArray.slice(45, 50);
+        let average = speechRange.reduce((acc, val) => acc + val, 0) / speechRange.length;
+
+        // Stable noise floor threshold
+        const threshold = 50;
+        if (average < threshold) average = 0;
+        else average -= threshold;
+
+        const volume = average;
         const smoothedVolume = lastVolume + (volume - lastVolume) * smoothingFactor;
         lastVolume = smoothedVolume;
-        const normalizedVolume = Math.min(smoothedVolume / 128, 1);
 
-        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", normalizedVolume * 1.5);
-        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", normalizedVolume * 0.5 - 0.25);
+        const normalizedVolume = Math.min(smoothedVolume / 120, 1.2);
+
+        currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", normalizedVolume);
+        // currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", normalizedVolume * 5.4);
         animationFrameId = requestAnimationFrame(updateMouth);
+        // currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
+        // currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
       };
       updateMouth();
+
+
     } else {
       audioBufferSource.connect(audioContext.destination); // Connect directly if no model for analysis
     }
@@ -243,7 +295,7 @@ async function tryPlaySingleChunk(textChunk, voiceId, attempt = 0, preloadedBuff
 
         if (currentModel && currentAudio === source) {
           currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
-          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
         }
         try {
           if (source && (source.playbackState === source.PLAYING_STATE || source.playbackState === source.SCHEDULED_STATE)) {
@@ -263,7 +315,7 @@ async function tryPlaySingleChunk(textChunk, voiceId, attempt = 0, preloadedBuff
         if (animationFrameId) cancelAnimationFrame(animationFrameId);
         if (currentModel && currentAudio === source) {
           currentModel.internalModel.coreModel.setParameterValueById("ParamMouthOpenY", 0);
-          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 0);
+          currentModel.internalModel.coreModel.setParameterValueById("ParamMouthForm", 1);
         }
         // currentAudio is cleared in the finally block after this promise resolves
         resolve();

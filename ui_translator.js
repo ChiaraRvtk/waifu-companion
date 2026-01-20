@@ -139,8 +139,8 @@ async function applyInterfaceLanguage(langCode) {
       if (el.tagName === 'H3') {
         el.textContent = uiStrings[key];
       }
-      // If it's a button
-      else if (el.tagName === 'BUTTON') {
+      // If it's a button or span
+      else if (el.tagName === 'BUTTON' || el.tagName === 'SPAN') {
         el.textContent = uiStrings[key];
       }
       // If it's a label

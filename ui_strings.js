@@ -16,7 +16,7 @@ window.UI_STRINGS = {
     messages: 'messages',
     memoryContextLabel: '📌 Conversation Context',
     memoryContextDesc: 'This text is sent with every request so the AI remembers your long-term background, preferences, or roleplay setup.',
-    
+
     modelSettingsTitle: '🧩 Model Settings',
     selectModelLabel: '🎭 Select Model',
     addCustomModelLabel: '➕ Add Custom Model',
@@ -30,23 +30,23 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ Clear All Models',
     openModelGalleryBtn: 'Open Model Gallery',
     clearCustomModelsBtn: '🗑️ Clear Custom Models',
-    
+
     languageSettingsTitle: '🌐 Language Settings',
     responseLanguageLabel: '🈶 Response Language',
     translateToLabel: '🔁 Translate Response To',
     translateNone: 'None',
     showTransliterationLabel: '🔤 Show Transliteration (for JA, KO)',
     translateUILabel: '🈯 Translate User Interface (AI)',
-    
+
     voiceSettingsTitle: '🔊 Voice Settings',
     enableVoiceLabel: '🔈 Enable Voice (TTS)',
     voiceLabel: '🎙️ Voice',
     ttsChunkLimitLabel: '📏 TTS Chunk Character Limit',
     ttsChunkLimitCurrent: 'Max Characters:',
-    
+
     audioSettingsTitle: '🎧 Audio Settings',
     radioStreamLabel: '📻 Radio Stream',
-    
+
     displaySettingsTitle: '🖥️ Display Settings',
     showClockLabel: '⏰ Show Clock',
     chatboxOpacityLabel: '🪟 Chatbox Opacity',
@@ -54,7 +54,7 @@ window.UI_STRINGS = {
     messageOpacityLabel: '💬 Message Bubble Opacity',
     messageOpacityCurrent: 'Current:',
     bgOpacityLabel: '🖼️ Background Image Opacity',
-    
+
     backgroundSettingsTitle: '🖼️ Background Image',
     bgPromptLabel: '✨ AI Background Prompt',
     bgPromptPlaceholder: 'e.g., tranquil starry night sky, minimal, soft light',
@@ -82,7 +82,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Contain • Bottom',
     bgFitFitWidth: 'Fit Width',
     bgFitFitHeight: 'Fit Height',
-    
+
     preferencesTitle: '⚙️ Preferences',
     alwaysShowSettingsLabel: '🪄 Always show Settings on page load',
     alwaysShowSettingsDesc: 'If enabled, the settings panel opens on every load. Otherwise, it remembers your last open/closed state.',
@@ -92,31 +92,32 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'Allows the AI to know your device\'s battery level and charging state.',
     multipleModelsLabel: '🧬 Load multiple models at once',
     multipleModelsDesc: 'When enabled, selecting a model adds it without removing existing ones.',
-    
+
     interfaceLanguageLabel: '🌍 Interface Language',
-    
+
     debugSettingsTitle: '🐞 Debug Settings',
     enableDebuggerLabel: '🧰 Enable Debug Panel',
     showVerboseLogsLabel: '💬 Show Live2d Debug Logs',
     showAIDebugLogsLabel: '🧠 Show AI Debug Logs',
     showTTSDebugLogsLabel: '🔊 Show TTS Debug Logs',
     forceOfflineLabel: '🔌 Test Fallback AI',
-    
+
     helpTutorialTitle: '❓ Help & Tutorial',
     launchTutorialBtn: '📘 Launch Tutorial',
     resetLanguagesBtn: 'Reset Languages',
     playTTSBtn: 'Play TTS',
     pauseTTSBtn: 'Pause TTS',
     stopTTSBtn: 'Stop TTS',
-    
+    ttsLoadingText: 'Generating voice...',
+
     // Chat interface
     messageInputPlaceholder: 'Type your message...',
     sendBtn: 'Send',
     resetChatBtn: 'Reset Chat',
-    
+
     // Tutorial
     appGuideTitle: 'App Guide',
-    
+
     // Common
     noCustomModelsAdded: 'No custom models added'
   },
@@ -131,7 +132,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 会話メモリサイズ',
     memorySizeCurrent: '現在:',
     messages: 'メッセージ',
-    
+
     modelSettingsTitle: '🧩 モデル設定',
     selectModelLabel: '🎭 モデルを選択',
     addCustomModelLabel: '➕ カスタムモデルを追加',
@@ -145,27 +146,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ すべてのモデルをクリア',
     openModelGalleryBtn: 'モデルギャラリーを開く',
     clearCustomModelsBtn: '🗑️ カスタムモデルをクリア',
-    
+
     languageSettingsTitle: '🌐 言語設定',
     responseLanguageLabel: '🈶 応答言語',
     translateToLabel: '🔁 翻訳先言語',
     translateNone: 'なし',
     showTransliterationLabel: '🔤 ローマ字表記を表示（JA、KO用）',
-    
+
     voiceSettingsTitle: '🔊 音声設定',
     enableVoiceLabel: '🔈 音声を有効にする（TTS）',
     voiceLabel: '🎙️ 音声',
-    
+
     audioSettingsTitle: '🎧 オーディオ設定',
     radioStreamLabel: '📻 ラジオストリーム',
-    
+
     displaySettingsTitle: '🖥️ 表示設定',
     showClockLabel: '⏰ 時計を表示',
     chatboxOpacityLabel: '🪟 チャットボックスの不透明度',
     chatboxOpacityCurrent: '現在:',
     messageOpacityLabel: '💬 メッセージバブルの不透明度',
     messageOpacityCurrent: '現在:',
-    
+
     backgroundSettingsTitle: '🖼️ 背景画像',
     bgPromptLabel: '✨ AI背景プロンプト',
     bgPromptPlaceholder: '例：静かな星空、ミニマル、柔らかい光',
@@ -193,7 +194,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'コンテイン • 下',
     bgFitFitWidth: '幅に合わせる',
     bgFitFitHeight: '高さに合わせる',
-    
+
     preferencesTitle: '⚙️ 設定',
     alwaysShowSettingsLabel: '🪄 ページ読み込み時に常に設定を表示',
     alwaysShowSettingsDesc: '有効にすると、毎回ロード時に設定パネルが開きます。無効の場合は、最後の開閉状態を記憶します。',
@@ -203,26 +204,26 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'AIがデバイスのバッテリーレベルと充電状態を知ることができます。',
     multipleModelsLabel: '🧬 複数のモデルを同時に読み込む',
     multipleModelsDesc: '有効にすると、既存のモデルを削除せずにモデルを追加します。',
-    
+
     interfaceLanguageLabel: '🌍 インターフェース言語',
-    
+
     debugSettingsTitle: '🐞 デバッグ設定',
     enableDebuggerLabel: '🧰 デバッグパネルを有効にする',
     forceOfflineLabel: '🔌 オフラインモードを強制する (フォールバックのテスト)',
-    
+
     helpTutorialTitle: '❓ ヘルプ＆チュートリアル',
     launchTutorialBtn: '📘 チュートリアルを開始',
     resetLanguagesBtn: '言語をリセット',
     playTTSBtn: '再生',
     pauseTTSBtn: '一時停止',
     stopTTSBtn: '停止',
-    
+
     messageInputPlaceholder: 'メッセージを入力...',
     sendBtn: '送信',
     resetChatBtn: 'チャットをリセット',
-    
+
     appGuideTitle: 'アプリガイド',
-    
+
     noCustomModelsAdded: 'カスタムモデルが追加されていません'
   },
   'ko-KR': {
@@ -230,7 +231,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 대화 메모리 크기',
     memorySizeCurrent: '현재:',
     messages: '메시지',
-    
+
     modelSettingsTitle: '🧩 모델 설정',
     selectModelLabel: '🎭 모델 선택',
     addCustomModelLabel: '➕ 사용자 정의 모델 추가',
@@ -244,27 +245,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ 모든 모델 제거',
     openModelGalleryBtn: '모델 갤러리 열기',
     clearCustomModelsBtn: '🗑️ 사용자 정의 모델 제거',
-    
+
     languageSettingsTitle: '🌐 언어 설정',
     responseLanguageLabel: '🈶 응답 언어',
     translateToLabel: '🔁 번역 언어',
     translateNone: '없음',
     showTransliterationLabel: '🔤 로마자 표기 표시(JA, KO용)',
-    
+
     voiceSettingsTitle: '🔊 음성 설정',
     enableVoiceLabel: '🔈 음성 활성화(TTS)',
     voiceLabel: '🎙️ 음성',
-    
+
     audioSettingsTitle: '🎧 오디오 설정',
     radioStreamLabel: '📻 라디오 스트림',
-    
+
     displaySettingsTitle: '🖥️ 표시 설정',
     showClockLabel: '⏰ 시계 표시',
     chatboxOpacityLabel: '🪟 채팅상자 투명도',
     chatboxOpacityCurrent: '현재:',
     messageOpacityLabel: '💬 메시지 버블 투명도',
     messageOpacityCurrent: '현재:',
-    
+
     backgroundSettingsTitle: '🖼️ 배경 이미지',
     bgPromptLabel: '✨ AI 배경 프롬프트',
     bgPromptPlaceholder: '예: 고요한 별이 많은 밤하늘, 미니멀, 부드러운 빛',
@@ -292,7 +293,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Contain • 아래',
     bgFitFitWidth: '너비에 맞추기',
     bgFitFitHeight: '높이에 맞추기',
-    
+
     preferencesTitle: '⚙️ 환경설정',
     alwaysShowSettingsLabel: '🪄 페이지 로드 시 설정 항상 표시',
     alwaysShowSettingsDesc: '활성화하면 매번 로드할 때 설정 패널이 열립니다. 비활성화하면 마지막 개폐 상태를 기억합니다.',
@@ -302,22 +303,22 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'AI가 장치의 배터리 수준 및 충전 상태를 알 수 있도록 합니다.',
     multipleModelsLabel: '🧬 여러 모델을 동시 로드',
     multipleModelsDesc: '활성화하면 기존 모델을 제거하지 않고 모델을 추가합니다.',
-    
+
     interfaceLanguageLabel: '🌍 인터페이스 언어',
-    
+
     debugSettingsTitle: '🐞 디버그 설정',
     enableDebuggerLabel: '🧰 디버그 패널 활성화',
-    
+
     helpTutorialTitle: '❓ 도움말 및 자습서',
     launchTutorialBtn: '📘 자습서 시작',
     resetLanguagesBtn: '언어를 리셋',
-    
+
     messageInputPlaceholder: '메시지를 입력하세요...',
     sendBtn: '전송',
     resetChatBtn: '채팅 초기화',
-    
+
     appGuideTitle: '앱 가이드',
-    
+
     noCustomModelsAdded: '추가된 사용자 정의 모델이 없습니다'
   },
   'es-ES': {
@@ -325,7 +326,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 Tamaño de memoria de conversación',
     memorySizeCurrent: 'Actual:',
     messages: 'mensajes',
-    
+
     modelSettingsTitle: '🧩 Configuración de modelo',
     selectModelLabel: '🎭 Seleccionar modelo',
     addCustomModelLabel: '➕ Añadir modelo personalizado',
@@ -339,27 +340,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ Limpiar todos los modelos',
     openModelGalleryBtn: 'Abrir galería de modelos',
     clearCustomModelsBtn: '🗑️ Limpiar modelos personalizados',
-    
+
     languageSettingsTitle: '🌐 Configuración de idioma',
     responseLanguageLabel: '🈶 Idioma de respuesta',
     translateToLabel: '🔁 Traducir a',
     translateNone: 'Ninguno',
     showTransliterationLabel: '🔤 Mostrar transliteración (para JA, KO)',
-    
+
     voiceSettingsTitle: '🔊 Configuración de voz',
     enableVoiceLabel: '🔈 Habilitar voz (TTS)',
     voiceLabel: '🎙️ Voz',
-    
+
     audioSettingsTitle: '🎧 Configuración de audio',
     radioStreamLabel: '📻 Transmisión de radio',
-    
+
     displaySettingsTitle: '🖥️ Configuración de pantalla',
     showClockLabel: '⏰ Mostrar reloj',
     chatboxOpacityLabel: '🪟 Opacidad del cuadro de chat',
     chatboxOpacityCurrent: 'Actual:',
     messageOpacityLabel: '💬 Opacidad de burbuja de mensaje',
     messageOpacityCurrent: 'Actual:',
-    
+
     backgroundSettingsTitle: '🖼️ Imagen de fondo',
     bgPromptLabel: '✨ Indicación de fondo de IA',
     bgPromptPlaceholder: 'Ej: cielo nocturno estrellado tranquilo, minimalista, luz suave',
@@ -387,7 +388,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Contener • Abajo',
     bgFitFitWidth: 'Ajustar ancho',
     bgFitFitHeight: 'Ajustar alto',
-    
+
     preferencesTitle: '⚙️ Preferencias',
     alwaysShowSettingsLabel: '🪄 Mostrar siempre configuración al cargar',
     alwaysShowSettingsDesc: 'Si está habilitado, el panel de configuración se abre en cada carga. De lo contrario, recuerda tu último estado abierto/cerrado.',
@@ -397,22 +398,22 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'Permite que el AI conozca el nivel de batería y el estado de carga del dispositivo.',
     multipleModelsLabel: '🧬 Cargar varios modelos a la vez',
     multipleModelsDesc: 'Cuando está habilitado, seleccionar un modelo lo añade sin eliminar los existentes.',
-    
+
     interfaceLanguageLabel: '🌍 Idioma de interfaz',
-    
+
     debugSettingsTitle: '🐞 Configuración de depuración',
     enableDebuggerLabel: '🧰 Habilitar panel de depuración',
-    
+
     helpTutorialTitle: '❓ Ayuda y tutorial',
     launchTutorialBtn: '📘 Iniciar tutorial',
     resetLanguagesBtn: 'Idioma a reestablecer',
-    
+
     messageInputPlaceholder: 'Escriba su mensaje...',
     sendBtn: 'Enviar',
     resetChatBtn: 'Restablecer chat',
-    
+
     appGuideTitle: 'Guía de la aplicación',
-    
+
     noCustomModelsAdded: 'No se han añadido modelos personalizados'
   },
   'fr-FR': {
@@ -420,7 +421,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 Taille de la mémoire de conversation',
     memorySizeCurrent: 'Actuel:',
     messages: 'messages',
-    
+
     modelSettingsTitle: '🧩 Paramètres du modèle',
     selectModelLabel: '🎭 Sélectionner un modèle',
     addCustomModelLabel: '➕ Ajouter un modèle personnalisé',
@@ -434,27 +435,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ Effacer tous les modèles',
     openModelGalleryBtn: 'Ouvrir la galerie de modèles',
     clearCustomModelsBtn: '🗑️ Effacer les modèles personnalisés',
-    
+
     languageSettingsTitle: '🌐 Paramètres de langue',
     responseLanguageLabel: '🈶 Langue de réponse',
     translateToLabel: '🔁 Traduire en',
     translateNone: 'Aucun',
     showTransliterationLabel: '🔤 Afficher la translittération (pour JA, KO)',
-    
+
     voiceSettingsTitle: '🔊 Paramètres de voix',
     enableVoiceLabel: '🔈 Activer la voix (TTS)',
     voiceLabel: '🎙️ Voix',
-    
+
     audioSettingsTitle: '🎧 Paramètres audio',
     radioStreamLabel: '📻 Flux radio',
-    
+
     displaySettingsTitle: '🖥️ Paramètres d\'affichage',
     showClockLabel: '⏰ Afficher l\'horloge',
     chatboxOpacityLabel: '🪟 Opacité de la boîte de chat',
     chatboxOpacityCurrent: 'Actuel:',
     messageOpacityLabel: '💬 Opacité de la bulle de message',
     messageOpacityCurrent: 'Actuel:',
-    
+
     backgroundSettingsTitle: '🖼️ Image d\'arrière-plan',
     bgPromptLabel: '✨ Invite d\'arrière-plan IA',
     bgPromptPlaceholder: 'Ex: ciel nocturne étoilé tranquille, minimaliste, lumière douce',
@@ -482,7 +483,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Contenir • Bas',
     bgFitFitWidth: 'Ajuster la largeur',
     bgFitFitHeight: 'Ajuster la hauteur',
-    
+
     preferencesTitle: '⚙️ Préférences',
     alwaysShowSettingsLabel: '🪄 Toujours afficher les paramètres au chargement',
     alwaysShowSettingsDesc: 'Si cette option est activée, le panneau de paramètres s\'ouvre à chaque chargement. Sinon, il se souvient de votre dernier état ouvert/fermé.',
@@ -492,22 +493,22 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'Permet à l\'IA de connaître le niveau de batterie et l\'état de charge de votre appareil.',
     multipleModelsLabel: '🧬 Charger plusieurs modèles à la fois',
     multipleModelsDesc: 'Lorsqu\'elle est activée, la sélection d\'un modèle l\'ajoute sans supprimer les modèles existants.',
-    
+
     interfaceLanguageLabel: '🌍 Langue d\'interface',
-    
+
     debugSettingsTitle: '🐞 Paramètres de débogage',
     enableDebuggerLabel: '🧰 Activer le panneau de débogage',
-    
+
     helpTutorialTitle: '❓ Aide et didacticiel',
     launchTutorialBtn: '📘 Lancer le didacticiel',
     resetLanguagesBtn: 'Langue à réinitialiser',
-    
+
     messageInputPlaceholder: 'Tapez votre message...',
     sendBtn: 'Envoyer',
     resetChatBtn: 'Réinitialiser le chat',
-    
+
     appGuideTitle: 'Guide de l\'application',
-    
+
     noCustomModelsAdded: 'Aucun modèle personnalisé n\'a été ajouté'
   },
   'id-ID': {
@@ -515,7 +516,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 Ukuran Memori Percakapan',
     memorySizeCurrent: 'Saat ini:',
     messages: 'pesan',
-    
+
     modelSettingsTitle: '🧩 Pengaturan Model',
     selectModelLabel: '🎭 Pilih Model',
     addCustomModelLabel: '➕ Tambah Model Kustom',
@@ -529,27 +530,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ Hapus Semua Model',
     openModelGalleryBtn: 'Buka Galeri Model',
     clearCustomModelsBtn: '🗑️ Hapus Model Kustom',
-    
+
     languageSettingsTitle: '🌐 Pengaturan Bahasa',
     responseLanguageLabel: '🈶 Bahasa Respons',
     translateToLabel: '🔁 Terjemahkan Ke',
     translateNone: 'Tidak ada',
     showTransliterationLabel: '🔤 Tampilkan Transliterasi (untuk JA, KO)',
-    
+
     voiceSettingsTitle: '🔊 Pengaturan Suara',
     enableVoiceLabel: '🔈 Aktifkan Suara (TTS)',
     voiceLabel: '🎙️ Suara',
-    
+
     audioSettingsTitle: '🎧 Pengaturan Audio',
     radioStreamLabel: '📻 Aliran Radio',
-    
+
     displaySettingsTitle: '🖥️ Pengaturan Tampilan',
     showClockLabel: '⏰ Tampilkan Jam',
     chatboxOpacityLabel: '🪟 Opasitas Kotak Obrolan',
     chatboxOpacityCurrent: 'Saat ini:',
     messageOpacityLabel: '💬 Opasitas Gelembung Pesan',
     messageOpacityCurrent: 'Saat ini:',
-    
+
     backgroundSettingsTitle: '🖼️ Gambar Latar Belakang',
     bgPromptLabel: '✨ Prompt Latar Belakang AI',
     bgPromptPlaceholder: 'Cth: langit malam yang tenang penuh bintang, minimal, cahaya lembut',
@@ -577,7 +578,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Memuat • Bawah',
     bgFitFitWidth: 'Sesuaikan Lebar',
     bgFitFitHeight: 'Sesuaikan Tinggi',
-    
+
     preferencesTitle: '⚙️ Preferensi',
     alwaysShowSettingsLabel: '🪄 Selalu tampilkan Pengaturan saat memuat',
     alwaysShowSettingsDesc: 'Jika diaktifkan, panel pengaturan terbuka setiap kali dimuat. Jika tidak, itu mengingat status terakhir Anda.',
@@ -587,22 +588,22 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'Memungkinkan AI untuk mengetahui level baterai dan status pengisian daya perangkat Anda.',
     multipleModelsLabel: '🧬 Muat beberapa model sekaligus',
     multipleModelsDesc: 'Saat diaktifkan, memilih model menambahkannya tanpa menghapus yang ada.',
-    
+
     interfaceLanguageLabel: '🌍 Bahasa Antarmuka',
-    
+
     debugSettingsTitle: '🐞 Pengaturan Debug',
     enableDebuggerLabel: '🧰 Aktifkan Panel Debug',
-    
+
     helpTutorialTitle: '❓ Bantuan & Tutorial',
     launchTutorialBtn: '📘 Mulai Tutorial',
     resetLanguagesBtn: 'Bahasa untuk diatur ulang',
-    
+
     messageInputPlaceholder: 'Ketik pesan Anda...',
     sendBtn: 'Kirim',
     resetChatBtn: 'Atur Ulang Obrolan',
-    
+
     appGuideTitle: 'Panduan Aplikasi',
-    
+
     noCustomModelsAdded: 'Tidak ada model kustom yang ditambahkan'
   },
   'ms-MS': {
@@ -610,7 +611,7 @@ window.UI_STRINGS = {
     conversationMemoryLabel: '🧵 Saiz Memori Perbualan',
     memorySizeCurrent: 'Semasa:',
     messages: 'mesej',
-    
+
     modelSettingsTitle: '🧩 Tetapan Model',
     selectModelLabel: '🎭 Pilih Model',
     addCustomModelLabel: '➕ Tambah Model Tersuai',
@@ -624,27 +625,27 @@ window.UI_STRINGS = {
     clearAllModelsBtn: '🗑️ Padam Semua Model',
     openModelGalleryBtn: 'Buka Galeri Model',
     clearCustomModelsBtn: '🗑️ Padam Model Tersuai',
-    
+
     languageSettingsTitle: '🌐 Tetapan Bahasa',
     responseLanguageLabel: '🈶 Bahasa Respons',
     translateToLabel: '🔁 Terjemah Ke',
     translateNone: 'Tiada',
     showTransliterationLabel: '🔤 Paparkan Transliterasi (untuk JA, KO)',
-    
+
     voiceSettingsTitle: '🔊 Tetapan Suara',
     enableVoiceLabel: '🔈 Dayakan Suara (TTS)',
     voiceLabel: '🎙️ Suara',
-    
+
     audioSettingsTitle: '🎧 Tetapan Audio',
     radioStreamLabel: '📻 Aliran Radio',
-    
+
     displaySettingsTitle: '🖥️ Tetapan Paparan',
     showClockLabel: '⏰ Paparkan Jam',
     chatboxOpacityLabel: '🪟 Kelegapan Kotak Sembang',
     chatboxOpacityCurrent: 'Semasa:',
     messageOpacityLabel: '💬 Kelegapan Gelembung Mesej',
     messageOpacityCurrent: 'Semasa:',
-    
+
     backgroundSettingsTitle: '🖼️ Imej Latar Belakang',
     bgPromptLabel: '✨ Gesaan Latar Belakang AI',
     bgPromptPlaceholder: 'Cth: langit malam yang tenang dipenuhi bintang, minimal, cahaya lembut',
@@ -676,7 +677,7 @@ window.UI_STRINGS = {
     bgFitContainBottom: 'Muatan • Bawah',
     bgFitFitWidth: 'Sesuaikan Lebar',
     bgFitFitHeight: 'Sesuaikan Tinggi',
-    
+
     preferencesTitle: '⚙️ Keutamaan',
     alwaysShowSettingsLabel: '🪄 Sentiasa paparkan Tetapan semasa memuatkan',
     alwaysShowSettingsDesc: 'Jika didayakan, panel tetapan terbuka setiap kali dimuat. Jika tidak, ia mengingati keadaan terakhir anda.',
@@ -686,28 +687,28 @@ window.UI_STRINGS = {
     includeBatteryDesc: 'Membenarkan AI mengetahui tahap bateri dan keadaan pengisian peranti anda.',
     multipleModelsLabel: '🧬 Muatkan beberapa model sekaligus',
     multipleModelsDesc: 'Apabila didayakan, memilih model menambahkannya tanpa membuang yang sedia ada.',
-    
+
     interfaceLanguageLabel: '🌍 Bahasa Antarmuka',
-    
+
     debugSettingsTitle: '🐞 Tetapan Debug',
     enableDebuggerLabel: '🧰 Dayakan Panel Debug',
-    
+
     helpTutorialTitle: '❓ Bantuan & Tutorial',
     launchTutorialBtn: '📘 Mulai Tutorial',
     resetLanguagesBtn: 'Bahasa untuk diatur semula',
-    
+
     messageInputPlaceholder: 'Taip mesej anda...',
     sendBtn: 'Hantar',
     resetChatBtn: 'Tetapkan Semula Sembang',
-    
+
     appGuideTitle: 'Panduan Aplikasi',
-    
+
     noCustomModelsAdded: 'Tiada model tersuai yang ditambah'
   }
 };
 
 // Helper function to get translated string
-window.getString = function(key, lang = 'en-US') {
+window.getString = function (key, lang = 'en-US') {
   const langStrings = window.UI_STRINGS[lang] || window.UI_STRINGS['en-US'];
   return langStrings[key] || key;
 };

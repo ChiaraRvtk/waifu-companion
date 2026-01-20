@@ -324,6 +324,34 @@ canvas {
   display: none;
 }
 
+.tts-loading-indicator {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  font-style: italic;
+  color: #00d2ff;
+  margin-top: 5px;
+  padding: 5px 10px;
+  background: rgba(0, 210, 255, 0.1);
+  border-radius: 5px;
+  width: fit-content;
+}
+
+.tts-loading-indicator .spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(0, 210, 255, 0.3);
+  border-top-color: #00d2ff;
+  border-radius: 50%;
+  animation: tts-spin 0.8s linear infinite;
+}
+
+@keyframes tts-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .mic-button {
   display: inline-flex;
   align-items: center;
